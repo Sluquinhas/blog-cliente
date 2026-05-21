@@ -1,8 +1,8 @@
 type ArticleCardProps = {
-    titulo: string;
-    resumo: string;
-    categoria: string;
-    slug: string;
+  titulo: string;
+  resumo: string;
+  categoria: string;
+  slug: string;
 };
 
 export default function ArticleCard({
@@ -12,22 +12,18 @@ export default function ArticleCard({
   slug,
 }: ArticleCardProps) {
   return (
-    <article className="rounded-2xl bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+    <article className="flex h-full flex-col rounded-2xl bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
       <span className="text-sm font-semibold text-blue-600">
         {categoria}
       </span>
 
-      <h3 className="mt-4 text-xl font-bold">
-        {titulo}
-      </h3>
+      <h3 className="mt-4 text-xl font-bold">{titulo}</h3>
 
-      <p className="mt-3 text-gray-600">
-        {resumo}
-      </p>
+      <p className="mt-3 text-gray-600">{resumo}</p>
 
       <a
         href={`/artigos/${slug}`}
-        className="mt-6 inline-block font-semibold text-blue-600"
+        className="mt-auto inline-block pt-6 font-semibold text-blue-600"
       >
         Ler artigo →
       </a>

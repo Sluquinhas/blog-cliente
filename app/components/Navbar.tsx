@@ -9,7 +9,7 @@ export default function Navbar() {
                 <nav translate="no" className="flex gap-6 text-sm font-medium text-gray-600">
                     <a href="/">Ínicio</a>
                     <a href="/artigos">Artigos</a>
-                    <a href="#">Contato</a>
+                    <a href="/contato">Contato</a>
                 </nav>
             </div>
         </header>
