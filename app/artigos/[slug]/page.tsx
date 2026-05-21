@@ -1,3 +1,5 @@
+import { artigos } from "@/app/data/artigos";
+
 type Props = {
   params: {
     slug: string;
@@ -5,6 +7,20 @@ type Props = {
 };
 
 export default function ArtigoPage({ params }: Props) {
+  const artigo = artigos.find((item) => item.slug === params.slug);
+
+  if (!artigo) {
+    return (
+      <main className="min-h-screen bg-gray-100 p-10 text-gray-900">
+        <h1 className="text-4xl font-bold">Artigo não encontrado</h1>
+
+        <a href="/" className="mt-6 inline-block text-blue-600">
+          Voltar para início
+        </a>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-gray-100 text-gray-900">
       <header className="border-b bg-white">
@@ -21,22 +37,18 @@ export default function ArtigoPage({ params }: Props) {
 
       <article className="mx-auto max-w-4xl px-6 py-16">
         <span className="text-sm font-semibold uppercase text-blue-600">
-          Artigo
+          {artigo.categoria}
         </span>
 
         <h1 className="mt-4 text-5xl font-bold leading-tight">
-          {params.slug}
+          {artigo.titulo}
         </h1>
 
-        <p className="mt-6 text-lg text-gray-600">
-          Este é o espaço onde o conteúdo completo do artigo será exibido.
-        </p>
+        <p className="mt-6 text-lg text-gray-600">{artigo.resumo}</p>
 
         <div className="mt-10 rounded-2xl bg-white p-8 shadow-sm">
-          <p className="text-lg leading-8 text-gray-700">
-            Aqui futuramente entra o texto completo escrito pelo administrador
-            no painel do blog. Por enquanto, essa página está usando o slug da
-            URL apenas para demonstrar como a rota dinâmica funciona.
+          <p className="whitespace-pre-line text-lg leading-8 text-gray-700">
+            {artigo.conteudo}
           </p>
         </div>
       </article>

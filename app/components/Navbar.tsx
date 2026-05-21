@@ -6,12 +6,12 @@ export default function Navbar() {
                     Blog do Cliente 
                 </h1>
 
-                <nav className="flex gap-6 text-sm font-medium text-gray-600">
+                <nav translate="no" className="flex gap-6 text-sm font-medium text-gray-600">
                     <a href="/">Ínicio</a>
-                    <a href="#">Artigo</a>
+                    <a href="/artigos">Artigos</a>
                     <a href="#">Contato</a>
                 </nav>
             </div>
         </header>
-    )
+    );
 }

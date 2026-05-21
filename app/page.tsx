@@ -1,32 +1,9 @@
 import Navbar from "./components/Navbar";
 import ArticleCard from "./components/ArticleCard";
+import { artigos } from "./data/artigos";
 
-const artigos = [
-  {
-    titulo: "Como a tecnologia esta mudando o mundo",
-    resumo:
-      "Uma analise simples sobre inovação, inteligencia artificial e futuro.",
-    categoria: "Tecnologia",
-    slug: "tecnologia",
-  },
-  {
-    titulo: "Dicas para viajar melhor",
-    resumo:
-      "Ideias praticas para planejar viagens com mais segurança e economia.",
-    categoria: "Viagens",
-    slug: "viagens",
-  },
-  {
-    titulo: "Reflexões sobre cotidiano",
-    resumo:
-      "Pensamentos sobre vida, trabalho, sociedade e comportamento.",
-    categoria: "Opinião",
-    slug: "opiniao",
-  },
-];
-
-export default function Home() {
-  return (
+export default function(){
+  return(
     <main className="min-h-screen bg-gray-100 text-gray-900">
       <Navbar />
 
@@ -36,7 +13,7 @@ export default function Home() {
         </p>
 
         <h2 className="max-w-3xl text-5xl font-bold leading-tight">
-          Artigos sobre ideias, atualidades, tecnologia, viagens e assuntos
+           Artigos sobre ideias, atualidades, tecnologia, viagens e assuntos
           variados.
         </h2>
 
@@ -46,8 +23,8 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-6 px-6 pb-16 md:grid-cols-3">
-        {artigos.map((artigo) => (
+      <section id="artigos" className="mx-auto grid max-w-6xl gap-6 px-6 pb-16 md:grid-cols-3">
+       {artigos.map((artigo) => (
           <ArticleCard
             key={artigo.slug}
             titulo={artigo.titulo}
@@ -58,5 +35,5 @@ export default function Home() {
         ))}
       </section>
     </main>
-  );
+  )
 }
