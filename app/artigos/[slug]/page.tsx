@@ -1,15 +1,19 @@
+import Link from "next/link";
+
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import { artigos } from "../../data/artigos";
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export default function ArtigoPage({ params }: Props) {
-  const artigo = artigos.find((item) => item.slug === params.slug);
+export default async function ArtigoPage({ params }: Props) {
+  const { slug } = await params;
+
+  const artigo = artigos.find((item) => item.slug === slug);
 
   if (!artigo) {
     return (
@@ -17,11 +21,16 @@ export default function ArtigoPage({ params }: Props) {
         <Navbar />
 
         <section className="mx-auto max-w-4xl px-6 py-16">
-          <h1 className="text-4xl font-bold">Artigo não encontrado</h1>
+          <h1 className="text-4xl font-bold">
+            Artigo não encontrado
+          </h1>
 
-          <a href="/artigos" className="mt-6 inline-block text-blue-600">
+          <Link
+            href="/artigos"
+            className="mt-6 inline-block text-blue-600"
+          >
             Voltar para artigos
-          </a>
+          </Link>
         </section>
 
         <Footer />
@@ -34,12 +43,12 @@ export default function ArtigoPage({ params }: Props) {
       <Navbar />
 
       <article className="mx-auto max-w-4xl px-6 py-16">
-        <a
+        <Link
           href="/artigos"
           className="mb-8 inline-block text-sm font-semibold text-blue-600"
         >
           ← Voltar para artigos
-        </a>
+        </Link>
 
         <p className="text-sm font-semibold uppercase text-blue-600">
           {artigo.categoria}
