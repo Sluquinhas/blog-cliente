@@ -53,6 +53,9 @@ export default function Home() {
             resumo={artigo.resumo}
             categoria={artigo.categoria}
             slug={artigo.slug}
+            autor={artigo.autor}
+            data={artigo.data}
+            tempoLeitura={artigo.tempoLeitura}
           />
         ))}
       </section>
