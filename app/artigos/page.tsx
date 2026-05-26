@@ -27,11 +27,14 @@ export default function ArtigosPage() {
         <div className="grid gap-8 md:grid-cols-3">
           {artigos.map((artigo) => (
             <ArticleCard
-              key={artigo.slug}
-              titulo={artigo.titulo}
-              resumo={artigo.resumo}
-              categoria={artigo.categoria}
-              slug={artigo.slug}
+               key={artigo.slug}
+  titulo={artigo.titulo}
+  resumo={artigo.resumo}
+  categoria={artigo.categoria}
+  slug={artigo.slug}
+  autor={artigo.autor}
+  data={artigo.data}
+  tempoLeitura={artigo.tempoLeitura}
             />
           ))}
         </div>

@@ -41,10 +41,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        id="artigos"
-        className="mx-auto max-w-6xl px-6 pb-24"
-      >
+      <section id="artigos" className="mx-auto max-w-6xl px-6 pb-24">
         <div className="mb-14">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
             Todos os artigos
@@ -68,6 +65,9 @@ export default function Home() {
               resumo={artigo.resumo}
               categoria={artigo.categoria}
               slug={artigo.slug}
+              autor={artigo.autor}
+              data={artigo.data}
+              tempoLeitura={artigo.tempoLeitura}
             />
           ))}
         </div>
