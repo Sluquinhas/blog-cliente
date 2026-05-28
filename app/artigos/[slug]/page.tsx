@@ -20,12 +20,15 @@ export default async function ArtigoPage({ params }: Props) {
       <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
         <Navbar />
 
-        <section className="mx-auto max-w-4xl px-6 py-20">
-          <h1 className="text-4xl font-black text-gray-950 dark:text-white">
+        <section className="mx-auto max-w-4xl px-6 py-16 md:py-20">
+          <h1 className="text-3xl font-black text-gray-950 dark:text-white md:text-4xl">
             Artigo não encontrado
           </h1>
 
-          <Link href="/artigos" className="mt-6 inline-block font-semibold text-blue-600">
+          <Link
+            href="/artigos"
+            className="mt-6 inline-block font-semibold text-blue-600"
+          >
             ← Voltar para artigos
           </Link>
         </section>
@@ -39,7 +42,7 @@ export default async function ArtigoPage({ params }: Props) {
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
       <Navbar />
 
-      <article className="mx-auto max-w-4xl px-6 py-20">
+      <article className="mx-auto max-w-4xl px-6 py-14 md:py-20">
         <Link
           href="/artigos"
           className="inline-block text-sm font-bold text-blue-600 transition hover:text-blue-700"
@@ -47,16 +50,16 @@ export default async function ArtigoPage({ params }: Props) {
           ← Voltar para artigos
         </Link>
 
-        <div className="mt-10">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
+        <div className="mt-8 md:mt-10">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 md:text-sm">
             {artigo.categoria}
           </p>
 
-          <h1 className="mt-5 text-5xl font-black leading-tight tracking-tight text-gray-950 dark:text-white md:text-6xl">
+          <h1 className="mt-5 text-4xl font-black leading-tight tracking-tight text-gray-950 dark:text-white md:text-6xl">
             {artigo.titulo}
           </h1>
 
-          <p className="mt-6 text-xl leading-9 text-gray-600 dark:text-gray-400">
+          <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400 md:text-xl md:leading-9">
             {artigo.resumo}
           </p>
 
@@ -71,10 +74,10 @@ export default async function ArtigoPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mt-12 h-72 rounded-3xl border border-gray-200 bg-gradient-to-br from-blue-50 via-gray-100 to-gray-200 shadow-sm dark:border-gray-800 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950" />
+        <div className="mt-10 h-52 rounded-3xl border border-gray-200 bg-gradient-to-br from-blue-50 via-gray-100 to-gray-200 shadow-sm dark:border-gray-800 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950 md:mt-12 md:h-72" />
 
-        <section className="mt-12 rounded-3xl border border-gray-200 bg-white p-8 shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900">
-          <p className="whitespace-pre-line text-lg leading-9 text-gray-700 dark:text-gray-300">
+        <section className="mt-10 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900 md:mt-12 md:p-8">
+          <p className="whitespace-pre-line text-base leading-8 text-gray-700 dark:text-gray-300 md:text-lg md:leading-9">
             {artigo.conteudo}
           </p>
         </section>

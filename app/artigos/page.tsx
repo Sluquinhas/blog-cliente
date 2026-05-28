@@ -29,16 +29,16 @@ export default function ArtigosPage() {
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
       <Navbar />
 
-      <section className="mx-auto max-w-6xl px-6 py-20">
+      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
         <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
           Artigos
         </p>
 
-        <h1 className="text-5xl font-black tracking-tight text-gray-950 dark:text-white">
+        <h1 className="text-4xl font-black tracking-tight text-gray-950 dark:text-white sm:text-5xl">
           Explore todos os conteúdos publicados.
         </h1>
 
-        <p className="mt-6 max-w-2xl text-xl leading-9 text-gray-600 dark:text-gray-400">
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-400">
           Veja os artigos disponíveis no blog, organizados por categoria e tema.
         </p>
 
@@ -48,7 +48,7 @@ export default function ArtigosPage() {
             value={busca}
             onChange={(event) => setBusca(event.target.value)}
             placeholder="Pesquisar artigos..."
-            className="w-full max-w-xl rounded-2xl border border-gray-300 bg-white px-5 py-4 text-gray-900 outline-none transition focus:border-blue-600 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+            className="w-full rounded-2xl border border-gray-300 bg-white px-5 py-4 text-gray-900 outline-none transition focus:border-blue-600 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
           />
         </div>
 
@@ -69,34 +69,34 @@ export default function ArtigosPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-24">
-  {artigosFiltrados.length > 0 ? (
-    <div className="grid gap-8 md:grid-cols-3">
-      {artigosFiltrados.map((artigo) => (
-        <ArticleCard
-          key={artigo.slug}
-          titulo={artigo.titulo}
-          resumo={artigo.resumo}
-          categoria={artigo.categoria}
-          slug={artigo.slug}
-          autor={artigo.autor}
-          data={artigo.data}
-          tempoLeitura={artigo.tempoLeitura}
-        />
-      ))}
-    </div>
-  ) : (
-    <div className="rounded-3xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
-      <h2 className="text-2xl font-bold text-gray-950 dark:text-white">
-        Nenhum artigo encontrado
-      </h2>
+      <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+        {artigosFiltrados.length > 0 ? (
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+            {artigosFiltrados.map((artigo) => (
+              <ArticleCard
+                key={artigo.slug}
+                titulo={artigo.titulo}
+                resumo={artigo.resumo}
+                categoria={artigo.categoria}
+                slug={artigo.slug}
+                autor={artigo.autor}
+                data={artigo.data}
+                tempoLeitura={artigo.tempoLeitura}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-3xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="text-2xl font-bold text-gray-950 dark:text-white">
+              Nenhum artigo encontrado
+            </h2>
 
-      <p className="mt-3 text-gray-600 dark:text-gray-400">
-        Tente buscar por outro termo ou selecionar outra categoria.
-      </p>
-    </div>
-  )}
-</section>
+            <p className="mt-3 text-gray-600 dark:text-gray-400">
+              Tente buscar por outro termo ou selecionar outra categoria.
+            </p>
+          </div>
+        )}
+      </section>
 
       <Footer />
     </main>

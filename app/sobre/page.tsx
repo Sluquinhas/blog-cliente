@@ -6,32 +6,53 @@ export default function SobrePage() {
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
       <Navbar />
 
-      <section className="mx-auto max-w-4xl px-6 py-20">
+      <section className="mx-auto max-w-5xl px-4 py-14 sm:px-6 md:py-20">
         <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
           Sobre o blog
         </p>
 
-        <h1 className="text-5xl font-black tracking-tight text-gray-950 dark:text-white">
+        <h1 className="text-4xl font-black leading-tight tracking-tight text-gray-950 dark:text-white sm:text-5xl md:text-6xl">
           Um espaço moderno para compartilhar ideias.
         </h1>
 
-        <p className="mt-8 text-xl leading-9 text-gray-600 dark:text-gray-400">
+        <p className="mt-8 max-w-3xl text-lg leading-8 text-gray-600 dark:text-gray-400">
           Este blog foi criado para publicar conteúdos sobre tecnologia,
-          viagens, opinião, desenvolvimento pessoal e diversos assuntos do
-          cotidiano.
+          viagens, opiniões e temas diversos de forma organizada, moderna e
+          agradável para leitura.
         </p>
 
-        <div className="mt-12 rounded-3xl border border-gray-200 bg-white p-8 shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900">
-          <p className="leading-8 text-gray-700 dark:text-gray-300">
-            O objetivo do projeto é oferecer uma experiência moderna, rápida e
-            agradável para leitura de artigos na web. O site foi desenvolvido
-            utilizando Next.js, React e TailwindCSS.
-          </p>
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="text-xl font-black text-gray-950 dark:text-white">
+              Tecnologia
+            </h2>
 
-          <p className="mt-6 leading-8 text-gray-700 dark:text-gray-300">
-            Este projeto continua em desenvolvimento e futuramente terá um
-            painel administrativo para criar, editar e gerenciar artigos.
-          </p>
+            <p className="mt-4 leading-7 text-gray-600 dark:text-gray-400">
+              Conteúdos sobre programação, inovação, inteligência artificial e
+              tendências do mundo tech.
+            </p>
+          </div>
+
+          <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="text-xl font-black text-gray-950 dark:text-white">
+              Viagens
+            </h2>
+
+            <p className="mt-4 leading-7 text-gray-600 dark:text-gray-400">
+              Dicas, experiências e ideias para quem gosta de explorar novos
+              lugares e culturas.
+            </p>
+          </div>
+
+          <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="text-xl font-black text-gray-950 dark:text-white">
+              Opinião
+            </h2>
+
+            <p className="mt-4 leading-7 text-gray-600 dark:text-gray-400">
+              Reflexões sobre sociedade, comportamento, criatividade e cotidiano.
+            </p>
+          </div>
         </div>
       </section>
 
