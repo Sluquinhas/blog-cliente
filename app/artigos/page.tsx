@@ -29,16 +29,16 @@ export default function ArtigosPage() {
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
       <Navbar />
 
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
+      <section className="mx-auto max-w-6xl px-4 pt-8 pb-14 sm:px-6 md:py-20">
         <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
           Artigos
         </p>
 
-        <h1 className="text-4xl font-black tracking-tight text-gray-950 dark:text-white sm:text-5xl">
+        <h1 className="max-w-md text-3xl font-black leading-tight tracking-tight text-gray-950 dark:text-white sm:text-5xl md:max-w-none md:text-6xl">
           Explore todos os conteúdos publicados.
         </h1>
 
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-400">
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-400 md:mt-8 md:text-xl md:leading-9">
           Veja os artigos disponíveis no blog, organizados por categoria e tema.
         </p>
 
@@ -86,7 +86,7 @@ export default function ArtigosPage() {
             ))}
           </div>
         ) : (
-          <div className="rounded-3xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="rounded-3xl border border-gray-200 bg-white p-5 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-10">
             <h2 className="text-2xl font-bold text-gray-950 dark:text-white">
               Nenhum artigo encontrado
             </h2>

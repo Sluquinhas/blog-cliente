@@ -42,7 +42,7 @@ export default async function ArtigoPage({ params }: Props) {
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
       <Navbar />
 
-      <article className="mx-auto max-w-4xl px-6 py-14 md:py-20">
+      <article className="mx-auto max-w-4xl px-4 pt-8 pb-14 sm:px-6 md:py-20">
         <Link
           href="/artigos"
           className="inline-block text-sm font-bold text-blue-600 transition hover:text-blue-700"
@@ -55,7 +55,7 @@ export default async function ArtigoPage({ params }: Props) {
             {artigo.categoria}
           </p>
 
-          <h1 className="mt-5 text-4xl font-black leading-tight tracking-tight text-gray-950 dark:text-white md:text-6xl">
+          <h1 className="mt-5 max-w-md text-3xl font-black leading-tight tracking-tight text-gray-950 dark:text-white sm:text-5xl md:max-w-none md:text-6xl">
             {artigo.titulo}
           </h1>
 

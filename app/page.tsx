@@ -11,13 +11,13 @@ export default function Home() {
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
       <Navbar />
 
-      <section className="mx-auto max-w-6xl px-6 py-14 md:py-20">
+      <section className="mx-auto max-w-6xl px-4 pt-8 pb-14 sm:px-6 md:py-20">
         <div className="max-w-4xl">
-          <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
             Novo blog
           </p>
 
-          <h1 className="text-4xl font-black leading-tight tracking-tight text-gray-950 dark:text-white sm:text-5xl md:text-7xl">
+          <h1 className="max-w-md text-3xl font-black leading-tight tracking-tight text-gray-950 dark:text-white sm:text-5xl md:max-w-none md:text-7xl">
             Conteúdos, ideias e artigos para pessoas curiosas.
           </h1>
 
@@ -44,13 +44,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-20">
+      <section className="mx-auto max-w-6xl px-4 pb-14 sm:px-6 md:pb-20">
         <div className="mb-8">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
             Destaque
           </p>
 
-          <h2 className="text-4xl font-black tracking-tight text-gray-950 dark:text-white">
+          <h2 className="text-3xl font-black tracking-tight text-gray-950 dark:text-white sm:text-4xl">
             Artigo em destaque
           </h2>
         </div>
@@ -59,14 +59,14 @@ export default function Home() {
           href={`/artigos/${artigoDestaque.slug}`}
           className="group grid overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-gray-800 dark:bg-gray-900 lg:grid-cols-2"
         >
-          <div className="min-h-56 bg-gradient-to-br from-blue-100 via-gray-100 to-gray-300 transition-transform duration-300 group-hover:scale-105 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950 sm:min-h-72" />
+          <div className="min-h-44 bg-gradient-to-br from-blue-100 via-gray-100 to-gray-300 transition-transform duration-300 group-hover:scale-105 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950 sm:min-h-72" />
 
-          <div className="flex flex-col p-6 sm:p-8 md:p-10">
+          <div className="flex flex-col p-5 sm:p-8 md:p-10">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
               {artigoDestaque.categoria}
             </p>
 
-            <h3 className="mt-5 text-3xl font-black leading-tight text-gray-950 dark:text-white sm:text-4xl">
+            <h3 className="mt-5 text-2xl font-black leading-tight text-gray-950 dark:text-white sm:text-4xl">
               {artigoDestaque.titulo}
             </h3>
 
@@ -78,13 +78,9 @@ export default function Home() {
               <span className="font-semibold text-gray-700 dark:text-gray-300">
                 {artigoDestaque.autor}
               </span>
-
               <span>•</span>
-
               <span>{artigoDestaque.data}</span>
-
               <span>•</span>
-
               <span>{artigoDestaque.tempoLeitura}</span>
             </div>
 
@@ -95,13 +91,13 @@ export default function Home() {
         </a>
       </section>
 
-      <section id="artigos" className="mx-auto max-w-6xl px-6 pb-24">
-        <div className="mb-14">
+      <section id="artigos" className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+        <div className="mb-10 md:mb-14">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
             Mais artigos
           </p>
 
-          <h2 className="text-4xl font-black tracking-tight text-gray-950 dark:text-white md:text-5xl">
+          <h2 className="max-w-md text-3xl font-black tracking-tight text-gray-950 dark:text-white sm:text-4xl md:max-w-none md:text-5xl">
             Continue explorando conteúdos.
           </h2>
 
