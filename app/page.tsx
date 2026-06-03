@@ -14,16 +14,15 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-4 pt-8 pb-14 sm:px-6 md:py-20">
         <div className="max-w-4xl">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-            Novo blog
+            Economia e finanças
           </p>
 
           <h1 className="max-w-md text-3xl font-black leading-tight tracking-tight text-gray-950 dark:text-white sm:text-5xl md:max-w-none md:text-7xl">
-            Conteúdos, ideias e artigos para pessoas curiosas.
+           Análises, economia e finanças para decisões mais inteligentes.
           </h1>
 
           <p className="mt-6 max-w-3xl text-lg leading-8 text-gray-600 dark:text-gray-400 md:mt-8 md:text-xl md:leading-9">
-            Um espaço moderno para compartilhar tecnologia, viagens, opiniões e
-            conteúdos diversos de forma simples, organizada e profissional.
+            Um espaço para acompanhar análises econômicas, mercado financeiro, negócios e temas importantes para quem deseja entender melhor o cenário atual.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap md:mt-10 md:gap-4">
@@ -31,7 +30,7 @@ export default function Home() {
               href="#artigos"
               className="rounded-xl bg-gray-950 px-6 py-3 text-center font-semibold text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
             >
-              Explorar artigos
+              Ver análises
             </a>
 
             <a
@@ -94,11 +93,11 @@ export default function Home() {
       <section id="artigos" className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
         <div className="mb-10 md:mb-14">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-            Mais artigos
+           Mais análises
           </p>
 
           <h2 className="max-w-md text-3xl font-black tracking-tight text-gray-950 dark:text-white sm:text-4xl md:max-w-none md:text-5xl">
-            Continue explorando conteúdos.
+            Continue acompanhando as publicações.
           </h2>
 
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">

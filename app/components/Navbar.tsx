@@ -15,7 +15,7 @@ export default function Navbar() {
             href="/"
             className="text-2xl font-black tracking-tight text-gray-950 transition-colors dark:text-white"
           >
-            Blog do Cliente
+            Economista Raimundo Padilha
           </Link>
 
           <button
