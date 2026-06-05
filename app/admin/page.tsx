@@ -141,12 +141,19 @@ export default function AdminPage() {
                     {artigo.status}
                   </span>
 
-                     <Link
-                      href={`/admin/editar/${artigo.id}`}
-                       className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
-                       >  
-                         Editar
-                          </Link>
+                  <Link
+                    href={`/admin/visualizar/${artigo.id}`}
+                    className="rounded-lg border border-blue-300 px-4 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-950"
+                  >
+                    Visualizar
+                  </Link>
+
+                  <Link
+                    href={`/admin/editar/${artigo.id}`}
+                    className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                  >
+                    Editar
+                  </Link>
 
                   <button className="rounded-lg border border-red-300 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950">
                     Excluir
