@@ -67,6 +67,10 @@ export default function ArtigosPage() {
             </button>
           ))}
         </div>
+
+        <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
+          {artigosFiltrados.length} artigo(s) encontrado(s)
+        </p>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
