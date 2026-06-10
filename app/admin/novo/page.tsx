@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ThemeToggle from "../../components/ThemeToggle";
+import { criarArtigo } from "../../actions/artigos";
 
 export default function NovoArtigoPage() {
   return (
@@ -30,7 +31,10 @@ export default function NovoArtigoPage() {
           </p>
         </div>
 
-        <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900 sm:p-8">
+        <form
+          action={criarArtigo}
+          className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900 sm:p-8"
+        >
           <div className="grid gap-6 md:grid-cols-2">
             <div>
               <label className="mb-2 block font-semibold text-gray-800 dark:text-gray-200">
@@ -38,7 +42,9 @@ export default function NovoArtigoPage() {
               </label>
 
               <input
+                name="titulo"
                 type="text"
+                required
                 placeholder="Digite o título do artigo"
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
@@ -49,9 +55,13 @@ export default function NovoArtigoPage() {
                 Categoria
               </label>
 
-              <select className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                <option>Tecnologia</option>
-                <option>Viagens</option>
+              <select
+                name="categoria"
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+              >
+                <option>Economia</option>
+                <option>Finanças</option>
+                <option>Mercado</option>
                 <option>Opinião</option>
               </select>
             </div>
@@ -64,7 +74,9 @@ export default function NovoArtigoPage() {
               </label>
 
               <input
+                name="autor"
                 type="text"
+                required
                 placeholder="Nome do autor"
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
@@ -76,7 +88,9 @@ export default function NovoArtigoPage() {
               </label>
 
               <input
+                name="data"
                 type="date"
+                required
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
             </div>
@@ -87,7 +101,9 @@ export default function NovoArtigoPage() {
               </label>
 
               <input
+                name="tempoLeitura"
                 type="text"
+                required
                 placeholder="Ex: 5 min"
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
@@ -109,6 +125,7 @@ export default function NovoArtigoPage() {
               </p>
 
               <input
+                name="imagemCapa"
                 type="file"
                 accept="image/png, image/jpeg, image/webp"
                 className="mt-5 w-full cursor-pointer rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
@@ -122,6 +139,8 @@ export default function NovoArtigoPage() {
             </label>
 
             <textarea
+              name="resumo"
+              required
               rows={4}
               placeholder="Resumo do artigo..."
               className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
@@ -134,6 +153,8 @@ export default function NovoArtigoPage() {
             </label>
 
             <textarea
+              name="conteudo"
+              required
               rows={12}
               placeholder="Escreva o conteúdo completo do artigo..."
               className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
@@ -148,15 +169,25 @@ export default function NovoArtigoPage() {
               Cancelar
             </Link>
 
-            <button className="rounded-xl border border-gray-300 px-6 py-3 font-semibold text-gray-900 transition hover:bg-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800">
+            <button
+              type="submit"
+              name="status"
+              value="Rascunho"
+              className="rounded-xl border border-gray-300 px-6 py-3 font-semibold text-gray-900 transition hover:bg-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
+            >
               Salvar rascunho
             </button>
 
-            <button className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700">
+            <button
+              type="submit"
+              name="status"
+              value="Publicado"
+              className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+            >
               Publicar artigo
             </button>
           </div>
-        </div>
+        </form>
       </section>
     </main>
   );

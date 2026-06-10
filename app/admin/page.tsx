@@ -1,31 +1,10 @@
 import Link from "next/link";
 import ThemeToggle from "../components/ThemeToggle";
+import { listarArtigos } from "../actions/artigos";
 
-const artigosAdmin = [
-  {
-    id: 1,
-    titulo: "Como a tecnologia está mudando o mundo",
-    categoria: "Tecnologia",
-    status: "Publicado",
-    data: "25 Maio 2026",
-  },
-  {
-    id: 2,
-    titulo: "Dicas para viajar melhor",
-    categoria: "Viagens",
-    status: "Rascunho",
-    data: "24 Maio 2026",
-  },
-  {
-    id: 3,
-    titulo: "Reflexões sobre cotidiano",
-    categoria: "Opinião",
-    status: "Publicado",
-    data: "23 Maio 2026",
-  },
-];
+export default async function AdminPage() {
+  const artigosAdmin = await listarArtigos();
 
-export default function AdminPage() {
   return (
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12">
@@ -81,9 +60,8 @@ export default function AdminPage() {
 
             <h2 className="mt-3 text-5xl font-black text-gray-950 dark:text-white">
               {
-                artigosAdmin.filter(
-                  (artigo) => artigo.status === "Publicado"
-                ).length
+                artigosAdmin.filter((artigo) => artigo.status === "Publicado")
+                  .length
               }
             </h2>
           </div>
@@ -95,9 +73,8 @@ export default function AdminPage() {
 
             <h2 className="mt-3 text-5xl font-black text-gray-950 dark:text-white">
               {
-                artigosAdmin.filter(
-                  (artigo) => artigo.status === "Rascunho"
-                ).length
+                artigosAdmin.filter((artigo) => artigo.status === "Rascunho")
+                  .length
               }
             </h2>
           </div>
@@ -110,58 +87,70 @@ export default function AdminPage() {
             </h2>
           </div>
 
-          <div className="divide-y divide-gray-200 dark:divide-gray-800">
-            {artigosAdmin.map((artigo) => (
-              <div
-                key={artigo.id}
-                className="flex flex-col gap-5 p-6 transition hover:bg-gray-50 dark:hover:bg-gray-800/50 md:flex-row md:items-center md:justify-between"
-              >
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-                    {artigo.categoria}
-                  </p>
+          {artigosAdmin.length > 0 ? (
+            <div className="divide-y divide-gray-200 dark:divide-gray-800">
+              {artigosAdmin.map((artigo) => (
+                <div
+                  key={artigo.id}
+                  className="flex flex-col gap-5 p-6 transition hover:bg-gray-50 dark:hover:bg-gray-800/50 md:flex-row md:items-center md:justify-between"
+                >
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+                      {artigo.categoria}
+                    </p>
 
-                  <h3 className="mt-2 text-xl font-black text-gray-950 dark:text-white">
-                    {artigo.titulo}
-                  </h3>
+                    <h3 className="mt-2 text-xl font-black text-gray-950 dark:text-white">
+                      {artigo.titulo}
+                    </h3>
 
-                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    {artigo.data}
-                  </p>
+                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                      {artigo.data}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span
+                      className={`rounded-full px-4 py-2 text-sm font-semibold ${
+                        artigo.status === "Publicado"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                          : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                      }`}
+                    >
+                      {artigo.status}
+                    </span>
+
+                    <Link
+                      href={`/admin/visualizar/${artigo.id}`}
+                      className="rounded-lg border border-blue-300 px-4 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-950"
+                    >
+                      Visualizar
+                    </Link>
+
+                    <Link
+                      href={`/admin/editar/${artigo.id}`}
+                      className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                    >
+                      Editar
+                    </Link>
+
+                    <button className="rounded-lg border border-red-300 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950">
+                      Excluir
+                    </button>
+                  </div>
                 </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 text-center">
+              <h3 className="text-xl font-black text-gray-950 dark:text-white">
+                Nenhum artigo cadastrado
+              </h3>
 
-                <div className="flex flex-wrap items-center gap-3">
-                  <span
-                    className={`rounded-full px-4 py-2 text-sm font-semibold ${
-                      artigo.status === "Publicado"
-                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                        : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
-                    }`}
-                  >
-                    {artigo.status}
-                  </span>
-
-                  <Link
-                    href={`/admin/visualizar/${artigo.id}`}
-                    className="rounded-lg border border-blue-300 px-4 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-950"
-                  >
-                    Visualizar
-                  </Link>
-
-                  <Link
-                    href={`/admin/editar/${artigo.id}`}
-                    className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
-                  >
-                    Editar
-                  </Link>
-
-                  <button className="rounded-lg border border-red-300 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950">
-                    Excluir
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
+                Crie o primeiro artigo usando o botão “Novo artigo”.
+              </p>
+            </div>
+          )}
         </section>
       </section>
     </main>
