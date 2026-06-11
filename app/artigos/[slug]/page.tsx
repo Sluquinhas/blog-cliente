@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
-import { artigos } from "../../data/artigos";
+import { buscarArtigoPorSlug } from "../../actions/artigos";
 
 type Props = {
   params: Promise<{
@@ -13,9 +13,9 @@ type Props = {
 export default async function ArtigoPage({ params }: Props) {
   const { slug } = await params;
 
-  const artigo = artigos.find((item) => item.slug === slug);
+  const artigo = await buscarArtigoPorSlug(slug);
 
-  if (!artigo) {
+  if (!artigo || artigo.status !== "Publicado") {
     return (
       <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
         <Navbar />
