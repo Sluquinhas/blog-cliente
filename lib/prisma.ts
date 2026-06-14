@@ -2,7 +2,9 @@ import { PrismaClient } from "../app/generated/prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 const adapter = new PrismaBetterSqlite3({
-  url: "file:./dev.db",
+  // Caminho configurável por ambiente; em produção aponte para um arquivo em
+  // disco persistente (ex.: DATABASE_URL="file:/var/lib/padilha-blog/prod.db").
+  url: process.env.DATABASE_URL ?? "file:./dev.db",
 });
 
 const globalForPrisma = globalThis as unknown as {

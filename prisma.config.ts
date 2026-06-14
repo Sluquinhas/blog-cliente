@@ -7,6 +7,9 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
+    // Executado após `prisma migrate deploy/reset`. Seed em Node puro
+    // (better-sqlite3) para não depender de um runner TypeScript.
+    seed: "node prisma/seed.mjs",
   },
   datasource: {
     url: process.env["DATABASE_URL"],

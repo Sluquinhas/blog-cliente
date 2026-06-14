@@ -1,8 +1,14 @@
 import Link from "next/link";
 import ThemeToggle from "../components/ThemeToggle";
 import { listarArtigos } from "../actions/artigos";
+import { logout } from "../actions/auth";
+import { verifySession } from "../../lib/dal";
+import ExcluirArtigoButton from "./ExcluirArtigoButton";
 
 export default async function AdminPage() {
+  // Reforço de autorização no servidor (além da checagem otimista do proxy).
+  await verifySession();
+
   const artigosAdmin = await listarArtigos();
 
   return (
@@ -32,6 +38,15 @@ export default async function AdminPage() {
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <ThemeToggle />
+
+            <form action={logout}>
+              <button
+                type="submit"
+                className="w-full rounded-xl border border-gray-300 px-6 py-3 text-center font-semibold text-gray-900 transition hover:bg-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 sm:w-auto"
+              >
+                Sair
+              </button>
+            </form>
 
             <Link
               href="/admin/novo"
@@ -133,9 +148,7 @@ export default async function AdminPage() {
                       Editar
                     </Link>
 
-                    <button className="rounded-lg border border-red-300 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950">
-                      Excluir
-                    </button>
+                    <ExcluirArtigoButton id={artigo.id} titulo={artigo.titulo} />
                   </div>
                 </div>
               ))}

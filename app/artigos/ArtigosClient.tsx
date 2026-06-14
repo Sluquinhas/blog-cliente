@@ -15,6 +15,7 @@ type Artigo = {
   autor: string;
   data: string;
   tempoLeitura: string;
+  imagemCapa?: string | null;
 };
 
 export default function ArtigosClient({
@@ -50,12 +51,16 @@ export default function ArtigosClient({
         </p>
 
         <div className="mt-10">
+          <label htmlFor="busca" className="sr-only">
+            Pesquisar artigos
+          </label>
           <input
-            type="text"
+            id="busca"
+            type="search"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
             placeholder="Pesquisar artigos..."
-            className="w-full rounded-2xl border border-gray-300 bg-white px-5 py-4 dark:border-gray-700 dark:bg-gray-900"
+            className="w-full rounded-2xl border border-gray-300 bg-white px-5 py-4 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
           />
         </div>
 
@@ -77,6 +82,7 @@ export default function ArtigosClient({
                 autor={artigo.autor}
                 data={artigo.data}
                 tempoLeitura={artigo.tempoLeitura}
+                imagemCapa={artigo.imagemCapa}
               />
             ))}
           </div>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Renda fixa">
+  <defs>
+    <linearGradient id="bgRF" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#06251f"/>
+      <stop offset="1" stop-color="#0f3d33"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgRF)"/>
+  <g stroke="#ffffff" stroke-opacity="0.06" stroke-width="1">
+    <line x1="0" y1="210" x2="1200" y2="210"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/>
+  </g>
+  <path d="M120 500 H280 V420 H440 V340 H600 V260 H760 V190 H920 V140 H1080" fill="none" stroke="#34d399" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="820" y="430" font-family="Georgia, 'Times New Roman', serif" font-size="200" font-weight="700" fill="#ffffff" fill-opacity="0.07">R$</text>
+  <text x="120" y="575" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#a7f3d0" letter-spacing="6">RENDA FIXA</text>
+</svg>

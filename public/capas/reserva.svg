@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Reserva de emergência">
+  <defs>
+    <linearGradient id="bgR" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#13344e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgR)"/>
+  <!-- escudo (proteção) -->
+  <path d="M880 130 L1080 200 V340 C1080 450 1000 510 880 555 C760 510 680 450 680 340 V200 Z" fill="#1d4ed8" fill-opacity="0.18" stroke="#60a5fa" stroke-width="6"/>
+  <path d="M800 345 l55 60 l120 -150" fill="none" stroke="#93c5fd" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- pilhas de moedas -->
+  <g fill="#fbbf24">
+    <g transform="translate(190 470)">
+      <ellipse cx="0" cy="0" rx="70" ry="22" fill="#f59e0b"/>
+      <rect x="-70" y="-30" width="140" height="30" fill="#fbbf24"/>
+      <ellipse cx="0" cy="-30" rx="70" ry="22"/>
+    </g>
+    <g transform="translate(340 440)">
+      <ellipse cx="0" cy="0" rx="70" ry="22" fill="#f59e0b"/>
+      <rect x="-70" y="-60" width="140" height="60" fill="#fbbf24"/>
+      <ellipse cx="0" cy="-60" rx="70" ry="22"/>
+    </g>
+    <g transform="translate(490 405)">
+      <ellipse cx="0" cy="0" rx="70" ry="22" fill="#f59e0b"/>
+      <rect x="-70" y="-95" width="140" height="95" fill="#fbbf24"/>
+      <ellipse cx="0" cy="-95" rx="70" ry="22"/>
+    </g>
+  </g>
+  <text x="120" y="575" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#cbd5e1" letter-spacing="6">RESERVA DE EMERGÊNCIA</text>
+</svg>

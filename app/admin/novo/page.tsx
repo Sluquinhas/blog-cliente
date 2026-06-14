@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ThemeToggle from "../../components/ThemeToggle";
 import { criarArtigo } from "../../actions/artigos";
+import { logout } from "../../actions/auth";
 
 export default function NovoArtigoPage() {
   return (
@@ -14,7 +15,17 @@ export default function NovoArtigoPage() {
             ← Voltar para o painel
           </Link>
 
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <form action={logout}>
+              <button
+                type="submit"
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition hover:bg-white dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+              >
+                Sair
+              </button>
+            </form>
+          </div>
         </div>
 
         <div className="mb-8">
@@ -27,7 +38,8 @@ export default function NovoArtigoPage() {
           </h1>
 
           <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-400">
-            Preencha as informações abaixo para criar um novo conteúdo no blog.
+            Preencha as informações abaixo para publicar um novo conteúdo sobre
+            economia, mercado e investimentos.
           </p>
         </div>
 
@@ -37,11 +49,15 @@ export default function NovoArtigoPage() {
         >
           <div className="grid gap-6 md:grid-cols-2">
             <div>
-              <label className="mb-2 block font-semibold text-gray-800 dark:text-gray-200">
+              <label
+                htmlFor="titulo"
+                className="mb-2 block font-semibold text-gray-800 dark:text-gray-200"
+              >
                 Título
               </label>
 
               <input
+                id="titulo"
                 name="titulo"
                 type="text"
                 required
@@ -51,43 +67,56 @@ export default function NovoArtigoPage() {
             </div>
 
             <div>
-              <label className="mb-2 block font-semibold text-gray-800 dark:text-gray-200">
+              <label
+                htmlFor="categoria"
+                className="mb-2 block font-semibold text-gray-800 dark:text-gray-200"
+              >
                 Categoria
               </label>
 
               <select
+                id="categoria"
                 name="categoria"
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               >
                 <option>Economia</option>
-                <option>Finanças</option>
-                <option>Mercado</option>
-                <option>Opinião</option>
+                <option>Mercado Financeiro</option>
+                <option>Investimentos</option>
+                <option>Finanças Pessoais</option>
               </select>
             </div>
           </div>
 
           <div className="mt-6 grid gap-6 md:grid-cols-3">
             <div>
-              <label className="mb-2 block font-semibold text-gray-800 dark:text-gray-200">
+              <label
+                htmlFor="autor"
+                className="mb-2 block font-semibold text-gray-800 dark:text-gray-200"
+              >
                 Autor
               </label>
 
               <input
+                id="autor"
                 name="autor"
                 type="text"
                 required
+                defaultValue="Raimundo Padilha"
                 placeholder="Nome do autor"
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
             </div>
 
             <div>
-              <label className="mb-2 block font-semibold text-gray-800 dark:text-gray-200">
+              <label
+                htmlFor="data"
+                className="mb-2 block font-semibold text-gray-800 dark:text-gray-200"
+              >
                 Data
               </label>
 
               <input
+                id="data"
                 name="data"
                 type="date"
                 required
@@ -96,11 +125,15 @@ export default function NovoArtigoPage() {
             </div>
 
             <div>
-              <label className="mb-2 block font-semibold text-gray-800 dark:text-gray-200">
+              <label
+                htmlFor="tempoLeitura"
+                className="mb-2 block font-semibold text-gray-800 dark:text-gray-200"
+              >
                 Tempo de leitura
               </label>
 
               <input
+                id="tempoLeitura"
                 name="tempoLeitura"
                 type="text"
                 required
@@ -111,34 +144,41 @@ export default function NovoArtigoPage() {
           </div>
 
           <div className="mt-6">
-            <label className="mb-2 block font-semibold text-gray-800 dark:text-gray-200">
-              Imagem de capa
+            <label
+              htmlFor="imagemCapa"
+              className="mb-2 block font-semibold text-gray-800 dark:text-gray-200"
+            >
+              URL da imagem de capa{" "}
+              <span className="font-normal text-gray-500 dark:text-gray-400">
+                (opcional)
+              </span>
             </label>
 
-            <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center transition-colors dark:border-gray-700 dark:bg-gray-800">
-              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Envie uma imagem para destacar o artigo
-              </p>
+            <input
+              id="imagemCapa"
+              name="imagemCapa"
+              type="url"
+              inputMode="url"
+              placeholder="https://exemplo.com/imagem.jpg"
+              className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            />
 
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                PNG, JPG ou WEBP até 5MB
-              </p>
-
-              <input
-                name="imagemCapa"
-                type="file"
-                accept="image/png, image/jpeg, image/webp"
-                className="mt-5 w-full cursor-pointer rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
-              />
-            </div>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              Cole a URL pública de uma imagem (JPG, PNG ou WEBP). Se ficar em
+              branco, uma capa padrão sóbria será usada.
+            </p>
           </div>
 
           <div className="mt-6">
-            <label className="mb-2 block font-semibold text-gray-800 dark:text-gray-200">
+            <label
+              htmlFor="resumo"
+              className="mb-2 block font-semibold text-gray-800 dark:text-gray-200"
+            >
               Resumo
             </label>
 
             <textarea
+              id="resumo"
               name="resumo"
               required
               rows={4}
@@ -148,11 +188,15 @@ export default function NovoArtigoPage() {
           </div>
 
           <div className="mt-6">
-            <label className="mb-2 block font-semibold text-gray-800 dark:text-gray-200">
+            <label
+              htmlFor="conteudo"
+              className="mb-2 block font-semibold text-gray-800 dark:text-gray-200"
+            >
               Conteúdo
             </label>
 
             <textarea
+              id="conteudo"
               name="conteudo"
               required
               rows={12}

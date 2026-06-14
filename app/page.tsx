@@ -1,5 +1,7 @@
+import Link from "next/link";
 import Navbar from "./components/Navbar";
 import ArticleCard from "./components/ArticleCard";
+import Capa from "./components/Capa";
 import Footer from "./components/Footer";
 import { listarArtigos } from "./actions/artigos";
 
@@ -10,8 +12,9 @@ export default async function Home() {
     (artigo) => artigo.status === "Publicado"
   );
 
-const artigoDestaque = artigosPublicados[0];
-const outrosArtigos = artigosPublicados;
+  const artigoDestaque = artigosPublicados[0];
+  // Evita repetir o artigo em destaque no grid abaixo.
+  const outrosArtigos = artigosPublicados.slice(1);
 
   return (
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
@@ -41,12 +44,12 @@ const outrosArtigos = artigosPublicados;
               Ver análises
             </a>
 
-            <a
+            <Link
               href="/contato"
               className="rounded-xl border border-gray-300 bg-white px-6 py-3 text-center font-semibold text-gray-900 transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800"
             >
               Entrar em contato
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -63,11 +66,17 @@ const outrosArtigos = artigosPublicados;
         </div>
 
         {artigoDestaque ? (
-          <a
+          <Link
             href={`/artigos/${artigoDestaque.slug}`}
-            className="group grid overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-gray-800 dark:bg-gray-900 lg:grid-cols-2"
+            className="group grid overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 dark:border-gray-800 dark:bg-gray-900 dark:focus:ring-offset-gray-950 lg:grid-cols-2"
           >
-            <div className="min-h-44 bg-gradient-to-br from-blue-100 via-gray-100 to-gray-300 transition-transform duration-300 group-hover:scale-105 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950 sm:min-h-72" />
+            <Capa
+              src={artigoDestaque.imagemCapa}
+              alt={`Imagem de capa: ${artigoDestaque.titulo}`}
+              className="min-h-44 transition-transform duration-300 group-hover:scale-105 sm:min-h-72"
+              sizes="(max-width: 1024px) 100vw, 600px"
+              priority
+            />
 
             <div className="flex flex-col p-5 sm:p-8 md:p-10">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
@@ -96,7 +105,7 @@ const outrosArtigos = artigosPublicados;
                 Ler artigo →
               </span>
             </div>
-          </a>
+          </Link>
         ) : (
           <div className="rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
             <h3 className="text-2xl font-black text-gray-950 dark:text-white">
@@ -137,6 +146,7 @@ const outrosArtigos = artigosPublicados;
                 autor={artigo.autor}
                 data={artigo.data}
                 tempoLeitura={artigo.tempoLeitura}
+                imagemCapa={artigo.imagemCapa}
               />
             ))}
           </div>

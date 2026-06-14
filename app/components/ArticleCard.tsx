@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Capa from "./Capa";
 
 type Props = {
   titulo: string;
@@ -8,6 +9,7 @@ type Props = {
   autor: string;
   data: string;
   tempoLeitura: string;
+  imagemCapa?: string | null;
 };
 
 export default function ArticleCard({
@@ -18,6 +20,7 @@ export default function ArticleCard({
   autor,
   data,
   tempoLeitura,
+  imagemCapa,
 }: Props) {
   return (
     <Link
@@ -25,11 +28,14 @@ export default function ArticleCard({
       className="group block h-full rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 dark:focus:ring-offset-gray-950"
     >
       <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-300 ease-out group-hover:-translate-y-2 group-hover:scale-[1.01] group-hover:shadow-2xl dark:border-gray-800 dark:bg-gray-900">
-        
-        <div className="h-40 bg-gradient-to-br from-blue-50 via-gray-100 to-gray-200 transition-transform duration-300 group-hover:scale-105 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950 sm:h-44" />
+        <Capa
+          src={imagemCapa}
+          alt={`Imagem de capa: ${titulo}`}
+          className="h-40 transition-transform duration-300 group-hover:scale-105 sm:h-44"
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 400px"
+        />
 
         <div className="flex flex-1 flex-col p-5 sm:p-6">
-          
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-blue-600 sm:text-xs">
             {categoria}
           </p>

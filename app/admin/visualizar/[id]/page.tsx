@@ -1,7 +1,22 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import ThemeToggle from "../../../components/ThemeToggle";
+import Capa from "../../../components/Capa";
+import { buscarArtigoPorId } from "../../../actions/artigos";
+import { logout } from "../../../actions/auth";
 
-export default function VisualizarArtigoPage() {
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function VisualizarArtigoPage({ params }: Props) {
+  const { id } = await params;
+  const artigo = await buscarArtigoPorId(Number(id));
+
+  if (!artigo) {
+    notFound();
+  }
+
   return (
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
       <section className="mx-auto max-w-5xl px-4 py-8 sm:px-6 md:py-12">
@@ -13,7 +28,17 @@ export default function VisualizarArtigoPage() {
             ← Voltar para o painel
           </Link>
 
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <form action={logout}>
+              <button
+                type="submit"
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition hover:bg-white dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+              >
+                Sair
+              </button>
+            </form>
+          </div>
         </div>
 
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -27,12 +52,14 @@ export default function VisualizarArtigoPage() {
             </h1>
 
             <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-400">
-              Veja como o artigo poderá aparecer antes de ser publicado.
+              {artigo.status === "Publicado"
+                ? "Este artigo está publicado e visível no blog."
+                : "Este artigo é um rascunho e ainda não aparece no blog."}
             </p>
           </div>
 
           <Link
-            href="/admin/editar/1"
+            href={`/admin/editar/${artigo.id}`}
             className="rounded-xl bg-blue-600 px-6 py-3 text-center font-semibold text-white transition hover:bg-blue-700"
           >
             Editar artigo
@@ -40,43 +67,40 @@ export default function VisualizarArtigoPage() {
         </div>
 
         <article className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900">
-          <div className="h-64 bg-gradient-to-br from-blue-100 via-gray-100 to-gray-300 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950" />
+          <Capa
+            src={artigo.imagemCapa}
+            alt={`Imagem de capa: ${artigo.titulo}`}
+            className="h-64"
+            sizes="(max-width: 1024px) 100vw, 1024px"
+            priority
+          />
 
           <div className="p-6 sm:p-10">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
-              Economia
+              {artigo.categoria}
             </p>
 
             <h2 className="mt-5 text-4xl font-black leading-tight tracking-tight text-gray-950 dark:text-white sm:text-5xl">
-              Perspectivas da economia brasileira para 2026
+              {artigo.titulo}
             </h2>
 
             <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400">
-              Uma análise dos principais indicadores econômicos e das
-              expectativas para os próximos meses.
+              {artigo.resumo}
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
               <span className="font-semibold text-gray-700 dark:text-gray-300">
-                Raimundo Padilha
+                {artigo.autor}
               </span>
               <span>•</span>
-              <span>25 Maio 2026</span>
+              <span>{artigo.data}</span>
               <span>•</span>
-              <span>5 min de leitura</span>
+              <span>{artigo.tempoLeitura}</span>
             </div>
 
             <div className="mt-10 rounded-3xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-950">
               <p className="whitespace-pre-line text-lg leading-9 text-gray-700 dark:text-gray-300">
-                A economia brasileira passa por um momento de atenção, com
-                debates sobre juros, inflação, crescimento e investimentos.
-
-                Para investidores, empresários e profissionais, acompanhar os
-                indicadores econômicos é essencial para tomar decisões mais
-                conscientes.
-
-                Este artigo apresenta uma visão geral sobre os principais fatores
-                que podem influenciar o cenário econômico nos próximos meses.
+                {artigo.conteudo}
               </p>
             </div>
           </div>

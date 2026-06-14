@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+
+export const metadata: Metadata = {
+  title: "Contato",
+  description:
+    "Fale com Raimundo Padilha e a Padilha Participações. Assessoria de investimentos em Fortaleza/CE.",
+  alternates: { canonical: "/contato" },
+};
 
 export default function ContatoPage() {
   return (
@@ -16,29 +24,44 @@ export default function ContatoPage() {
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-400 md:mt-8 md:text-xl md:leading-9">
-          Tem alguma dúvida, sugestão ou proposta? Entre em contato através dos
-          canais abaixo.
+          Tem uma dúvida sobre investimentos, uma sugestão de pauta ou uma
+          proposta? Fale com a Padilha Participações pelos canais abaixo.
         </p>
 
         <div className="mt-10 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900 sm:p-8">
           <div className="space-y-6">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
-                Email
+                E-mail
               </p>
 
               <p className="mt-2 break-words text-lg text-gray-700 dark:text-gray-300">
-                contato@blogdocliente.com
+                <a
+                  href="mailto:contato@padilha.com.br"
+                  className="underline-offset-4 hover:underline"
+                >
+                  contato@padilha.com.br
+                </a>
               </p>
             </div>
 
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
-                Instagram
+                Localização
               </p>
 
               <p className="mt-2 text-lg text-gray-700 dark:text-gray-300">
-                @blogdocliente
+                Fortaleza — Ceará
+              </p>
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
+                Telefone
+              </p>
+
+              <p className="mt-2 text-lg text-gray-700 dark:text-gray-300">
+                {"{{TELEFONE}}"}
               </p>
             </div>
 
