@@ -61,7 +61,12 @@ export default function ContatoPage() {
               </p>
 
               <p className="mt-2 text-lg text-gray-700 dark:text-gray-300">
-                {"{{TELEFONE}}"}
+                <a
+                  href="tel:+558532547276"
+                  className="underline-offset-4 hover:underline"
+                >
+                  (85) 3254-7276
+                </a>
               </p>
             </div>
 
