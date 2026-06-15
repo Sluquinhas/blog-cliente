@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import ThemeToggle from "../../../components/ThemeToggle";
 import Capa from "../../../components/Capa";
 import { buscarArtigoPorId } from "../../../actions/artigos";
-import { logout } from "../../../actions/auth";
+import LogoutButton from "../../LogoutButton";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -30,14 +30,7 @@ export default async function VisualizarArtigoPage({ params }: Props) {
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <form action={logout}>
-              <button
-                type="submit"
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition hover:bg-white dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
-              >
-                Sair
-              </button>
-            </form>
+            <LogoutButton />
           </div>
         </div>
 

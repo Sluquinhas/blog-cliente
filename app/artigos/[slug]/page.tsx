@@ -7,6 +7,7 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Capa from "../../components/Capa";
 import { buscarArtigoPorSlug } from "../../actions/artigos";
+import { SITE_URL } from "@/lib/constants";
 
 type Props = {
   params: Promise<{
@@ -16,8 +17,6 @@ type Props = {
 
 // Memoiza a busca para reutilizar entre generateMetadata e a página.
 const getArtigo = cache((slug: string) => buscarArtigoPorSlug(slug));
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://padilha.com.br";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

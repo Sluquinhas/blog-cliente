@@ -2,14 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ThemeToggle from "../../../components/ThemeToggle";
 import { buscarArtigoPorId, atualizarArtigo } from "../../../actions/artigos";
-import { logout } from "../../../actions/auth";
-
-const CATEGORIAS = [
-  "Economia",
-  "Mercado Financeiro",
-  "Investimentos",
-  "Finanças Pessoais",
-];
+import LogoutButton from "../../LogoutButton";
+import { CATEGORIAS } from "@/lib/constants";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -40,14 +34,7 @@ export default async function EditarArtigoPage({ params }: Props) {
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <form action={logout}>
-              <button
-                type="submit"
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition hover:bg-white dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
-              >
-                Sair
-              </button>
-            </form>
+            <LogoutButton />
           </div>
         </div>
 

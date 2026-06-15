@@ -1,15 +1,19 @@
 import Link from "next/link";
 import ThemeToggle from "../components/ThemeToggle";
 import { listarArtigos } from "../actions/artigos";
-import { logout } from "../actions/auth";
 import { verifySession } from "../../lib/dal";
 import ExcluirArtigoButton from "./ExcluirArtigoButton";
+import LogoutButton from "./LogoutButton";
 
 export default async function AdminPage() {
   // Reforço de autorização no servidor (além da checagem otimista do proxy).
   await verifySession();
 
   const artigosAdmin = await listarArtigos();
+  const publicados = artigosAdmin.filter(
+    (artigo) => artigo.status === "Publicado"
+  ).length;
+  const rascunhos = artigosAdmin.length - publicados;
 
   return (
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
@@ -39,14 +43,7 @@ export default async function AdminPage() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <ThemeToggle />
 
-            <form action={logout}>
-              <button
-                type="submit"
-                className="w-full rounded-xl border border-gray-300 px-6 py-3 text-center font-semibold text-gray-900 transition hover:bg-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 sm:w-auto"
-              >
-                Sair
-              </button>
-            </form>
+            <LogoutButton className="w-full rounded-xl border border-gray-300 px-6 py-3 text-center font-semibold text-gray-900 transition hover:bg-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 sm:w-auto" />
 
             <Link
               href="/admin/novo"
@@ -74,10 +71,7 @@ export default async function AdminPage() {
             </p>
 
             <h2 className="mt-3 text-5xl font-black text-gray-950 dark:text-white">
-              {
-                artigosAdmin.filter((artigo) => artigo.status === "Publicado")
-                  .length
-              }
+              {publicados}
             </h2>
           </div>
 
@@ -87,10 +81,7 @@ export default async function AdminPage() {
             </p>
 
             <h2 className="mt-3 text-5xl font-black text-gray-950 dark:text-white">
-              {
-                artigosAdmin.filter((artigo) => artigo.status === "Rascunho")
-                  .length
-              }
+              {rascunhos}
             </h2>
           </div>
         </div>

@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { listarArtigos } from "./actions/artigos";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://padilha.com.br";
+import { SITE_URL } from "@/lib/constants";
 
 // Sempre reflete o estado atual do banco (inclui artigos criados pelo admin).
 export const dynamic = "force-dynamic";

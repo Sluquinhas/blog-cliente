@@ -4,13 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "../../lib/prisma";
 import { verifySession } from "../../lib/dal";
-
-const CATEGORIAS = [
-  "Economia",
-  "Mercado Financeiro",
-  "Investimentos",
-  "Finanças Pessoais",
-] as const;
+import { CATEGORIAS } from "@/lib/constants";
 
 function gerarSlug(titulo: string) {
   return titulo
@@ -61,9 +55,7 @@ function lerCampos(formData: FormData) {
 
   return {
     titulo: String(formData.get("titulo") ?? "").trim(),
-    categoria: (CATEGORIAS as readonly string[]).includes(categoria)
-      ? categoria
-      : "Economia",
+    categoria: CATEGORIAS.includes(categoria) ? categoria : "Economia",
     autor: String(formData.get("autor") ?? "").trim() || "Raimundo Padilha",
     data: formatarData(String(formData.get("data") ?? "")),
     tempoLeitura: normalizarTempoLeitura(
@@ -78,43 +70,55 @@ function lerCampos(formData: FormData) {
   };
 }
 
-export async function criarArtigo(formData: FormData) {
-  await verifySession();
-
+// Lê os campos do formulário e garante os obrigatórios.
+function lerCamposValidados(formData: FormData) {
   const campos = lerCampos(formData);
   if (!campos.titulo || !campos.resumo || !campos.conteudo) {
     throw new Error("Preencha título, resumo e conteúdo.");
   }
+  return campos;
+}
 
+function lerIdValido(formData: FormData): number {
+  const id = Number(formData.get("id"));
+  if (!Number.isInteger(id)) {
+    throw new Error("Artigo inválido.");
+  }
+  return id;
+}
+
+// Revalida as listagens que sempre mudam após uma mutação de artigo.
+function revalidarListas() {
+  revalidatePath("/");
+  revalidatePath("/artigos");
+  revalidatePath("/admin");
+}
+
+export async function criarArtigo(formData: FormData) {
+  await verifySession();
+
+  const campos = lerCamposValidados(formData);
   const slug = await gerarSlugUnico(campos.titulo);
 
   await prisma.artigo.create({
     data: { ...campos, slug },
   });
 
-  revalidatePath("/");
-  revalidatePath("/artigos");
-  revalidatePath("/admin");
+  revalidarListas();
   redirect("/admin");
 }
 
 export async function atualizarArtigo(formData: FormData) {
   await verifySession();
 
-  const id = Number(formData.get("id"));
-  if (!Number.isInteger(id)) {
-    throw new Error("Artigo inválido.");
-  }
+  const id = lerIdValido(formData);
 
   const existente = await prisma.artigo.findUnique({ where: { id } });
   if (!existente) {
     throw new Error("Artigo não encontrado.");
   }
 
-  const campos = lerCampos(formData);
-  if (!campos.titulo || !campos.resumo || !campos.conteudo) {
-    throw new Error("Preencha título, resumo e conteúdo.");
-  }
+  const campos = lerCamposValidados(formData);
 
   // O slug permanece estável para não quebrar links já publicados.
   await prisma.artigo.update({
@@ -122,9 +126,7 @@ export async function atualizarArtigo(formData: FormData) {
     data: campos,
   });
 
-  revalidatePath("/");
-  revalidatePath("/artigos");
-  revalidatePath("/admin");
+  revalidarListas();
   revalidatePath(`/artigos/${existente.slug}`);
   redirect("/admin");
 }
@@ -132,10 +134,7 @@ export async function atualizarArtigo(formData: FormData) {
 export async function excluirArtigo(formData: FormData) {
   await verifySession();
 
-  const id = Number(formData.get("id"));
-  if (!Number.isInteger(id)) {
-    throw new Error("Artigo inválido.");
-  }
+  const id = lerIdValido(formData);
 
   const existente = await prisma.artigo.findUnique({ where: { id } });
   if (existente) {
@@ -143,9 +142,7 @@ export async function excluirArtigo(formData: FormData) {
     revalidatePath(`/artigos/${existente.slug}`);
   }
 
-  revalidatePath("/");
-  revalidatePath("/artigos");
-  revalidatePath("/admin");
+  revalidarListas();
 }
 
 export async function listarArtigos() {

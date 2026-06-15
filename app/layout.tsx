@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SITE_URL } from "@/lib/constants";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,7 +13,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://padilha.com.br";
 const SITE_NAME = "Economista Raimundo Padilha";
 const SITE_DESCRIPTION =
   "Análises de economia, mercado financeiro e investimentos por Raimundo Padilha, " +
