@@ -34,6 +34,10 @@ yarn-error.log*
 .env*
 !.env.example
 
+# capas enviadas pelo painel (persistem no disco do servidor, não no git)
+/public/uploads/*
+!/public/uploads/.gitkeep
+
 # database (SQLite) — gerado via `prisma migrate deploy` + `npm run seed`
 *.db
 *.db-journal

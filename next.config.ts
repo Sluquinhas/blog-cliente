@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      // Capas são enviadas do dispositivo pelo painel; o padrão é 1 MB.
+      // 6 MB acomoda a validação de até 5 MB feita no server action.
+      bodySizeLimit: "6mb",
+    },
+  },
+
   images: {
     // As capas de seed são SVGs próprios (em /public/capas). Para servi-los via
     // next/image precisamos permitir SVG; a CSP abaixo isola o conteúdo.

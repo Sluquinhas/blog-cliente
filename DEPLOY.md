@@ -108,8 +108,8 @@ server {
     listen 80;
     server_name padilha.com.br www.padilha.com.br;
 
-    # Limite de upload de formulários (resumo/conteúdo de artigos)
-    client_max_body_size 2m;
+    # Limite de upload de formulários (inclui a foto de capa do artigo, até 5 MB)
+    client_max_body_size 6m;
 
     location / {
         proxy_pass http://127.0.0.1:3000;

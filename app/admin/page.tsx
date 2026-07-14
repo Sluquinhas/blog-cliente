@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ThemeToggle from "../components/ThemeToggle";
+import Capa from "../components/Capa";
 import { listarArtigos } from "../actions/artigos";
 import { verifySession } from "../../lib/dal";
 import ExcluirArtigoButton from "./ExcluirArtigoButton";
@@ -100,21 +101,30 @@ export default async function AdminPage() {
                   key={artigo.id}
                   className="flex flex-col gap-5 p-6 transition hover:bg-gray-50 dark:hover:bg-gray-800/50 md:flex-row md:items-center md:justify-between"
                 >
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-                      {artigo.categoria}
-                    </p>
+                  <div className="flex min-w-0 items-center gap-4">
+                    <Capa
+                      src={artigo.imagemCapa}
+                      alt={`Capa de ${artigo.titulo}`}
+                      className="hidden h-16 w-24 shrink-0 rounded-lg sm:block"
+                      sizes="96px"
+                    />
 
-                    <h3 className="mt-2 text-xl font-black text-gray-950 dark:text-white">
-                      {artigo.titulo}
-                    </h3>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+                        {artigo.categoria}
+                      </p>
 
-                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                      {artigo.data}
-                    </p>
+                      <h3 className="mt-2 text-xl font-black text-gray-950 dark:text-white">
+                        {artigo.titulo}
+                      </h3>
+
+                      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        {artigo.data}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex shrink-0 flex-wrap items-center gap-3 md:justify-end">
                     <span
                       className={`rounded-full px-4 py-2 text-sm font-semibold ${
                         artigo.status === "Publicado"

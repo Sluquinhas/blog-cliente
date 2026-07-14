@@ -2,9 +2,63 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { writeFile, mkdir, unlink } from "node:fs/promises";
+import path from "node:path";
+import { randomUUID } from "node:crypto";
 import { prisma } from "../../lib/prisma";
 import { verifySession } from "../../lib/dal";
-import { CATEGORIAS } from "@/lib/constants";
+
+// Formatos de imagem aceitos para a capa (tipo MIME → extensão do arquivo).
+const EXTENSOES_IMAGEM: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
+
+const TAMANHO_MAXIMO_CAPA = 5 * 1024 * 1024; // 5 MB
+
+// Salva a capa enviada do dispositivo em /public/uploads e devolve o caminho
+// público (ex.: "/uploads/abc.jpg"). Se nenhum arquivo novo foi enviado,
+// mantém a capa atual (útil na edição).
+async function processarImagemCapa(
+  formData: FormData,
+  atual: string | null = null
+): Promise<string | null> {
+  const arquivo = formData.get("imagemCapa");
+
+  if (!(arquivo instanceof File) || arquivo.size === 0) {
+    return atual;
+  }
+
+  const extensao = EXTENSOES_IMAGEM[arquivo.type];
+  if (!extensao) {
+    throw new Error("Envie uma imagem nos formatos JPG, PNG, WEBP ou GIF.");
+  }
+  if (arquivo.size > TAMANHO_MAXIMO_CAPA) {
+    throw new Error("A imagem de capa deve ter no máximo 5 MB.");
+  }
+
+  const bytes = Buffer.from(await arquivo.arrayBuffer());
+  const nomeArquivo = `${randomUUID()}.${extensao}`;
+  const destino = path.join(process.cwd(), "public", "uploads");
+
+  await mkdir(destino, { recursive: true });
+  await writeFile(path.join(destino, nomeArquivo), bytes);
+
+  return `/uploads/${nomeArquivo}`;
+}
+
+// Remove do disco uma capa salva em /public/uploads (ignora URLs externas e a
+// capa padrão). Falhas são silenciadas para não interromper a operação.
+async function removerImagemCapa(caminho: string | null) {
+  if (!caminho || !caminho.startsWith("/uploads/")) return;
+  try {
+    await unlink(path.join(process.cwd(), "public", caminho));
+  } catch {
+    // arquivo já removido ou inexistente — nada a fazer
+  }
+}
 
 function gerarSlug(titulo: string) {
   return titulo
@@ -55,7 +109,7 @@ function lerCampos(formData: FormData) {
 
   return {
     titulo: String(formData.get("titulo") ?? "").trim(),
-    categoria: CATEGORIAS.includes(categoria) ? categoria : "Economia",
+    categoria: categoria.trim() || "Economia",
     autor: String(formData.get("autor") ?? "").trim() || "Raimundo Padilha",
     data: formatarData(String(formData.get("data") ?? "")),
     tempoLeitura: normalizarTempoLeitura(
@@ -63,7 +117,6 @@ function lerCampos(formData: FormData) {
     ),
     resumo: String(formData.get("resumo") ?? "").trim(),
     conteudo: String(formData.get("conteudo") ?? "").trim(),
-    imagemCapa: String(formData.get("imagemCapa") ?? "").trim() || null,
     status: String(formData.get("status") ?? "Publicado") === "Rascunho"
       ? "Rascunho"
       : "Publicado",
@@ -98,10 +151,11 @@ export async function criarArtigo(formData: FormData) {
   await verifySession();
 
   const campos = lerCamposValidados(formData);
+  const imagemCapa = await processarImagemCapa(formData);
   const slug = await gerarSlugUnico(campos.titulo);
 
   await prisma.artigo.create({
-    data: { ...campos, slug },
+    data: { ...campos, imagemCapa, slug },
   });
 
   revalidarListas();
@@ -119,11 +173,17 @@ export async function atualizarArtigo(formData: FormData) {
   }
 
   const campos = lerCamposValidados(formData);
+  const imagemCapa = await processarImagemCapa(formData, existente.imagemCapa);
+
+  // Trocou a capa? Remove a imagem antiga do disco para não acumular arquivos.
+  if (imagemCapa !== existente.imagemCapa) {
+    await removerImagemCapa(existente.imagemCapa);
+  }
 
   // O slug permanece estável para não quebrar links já publicados.
   await prisma.artigo.update({
     where: { id },
-    data: campos,
+    data: { ...campos, imagemCapa },
   });
 
   revalidarListas();
@@ -139,6 +199,7 @@ export async function excluirArtigo(formData: FormData) {
   const existente = await prisma.artigo.findUnique({ where: { id } });
   if (existente) {
     await prisma.artigo.delete({ where: { id } });
+    await removerImagemCapa(existente.imagemCapa);
     revalidatePath(`/artigos/${existente.slug}`);
   }
 

@@ -2,6 +2,10 @@ import Link from "next/link";
 import ThemeToggle from "../../components/ThemeToggle";
 import { criarArtigo } from "../../actions/artigos";
 import LogoutButton from "../LogoutButton";
+import CategoriaInput from "../../components/CategoriaInput";
+import CapaUpload from "../../components/CapaUpload";
+import SubmitButton from "../../components/SubmitButton";
+import { CATEGORIAS } from "@/lib/constants";
 
 export default function NovoArtigoPage() {
   return (
@@ -38,6 +42,7 @@ export default function NovoArtigoPage() {
 
         <form
           action={criarArtigo}
+          autoComplete="off"
           className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900 sm:p-8"
         >
           <div className="grid gap-6 md:grid-cols-2">
@@ -54,6 +59,7 @@ export default function NovoArtigoPage() {
                 name="titulo"
                 type="text"
                 required
+                autoComplete="off"
                 placeholder="Digite o título do artigo"
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
@@ -67,16 +73,12 @@ export default function NovoArtigoPage() {
                 Categoria
               </label>
 
-              <select
+              <CategoriaInput
                 id="categoria"
                 name="categoria"
-                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-              >
-                <option>Economia</option>
-                <option>Mercado Financeiro</option>
-                <option>Investimentos</option>
-                <option>Finanças Pessoais</option>
-              </select>
+                options={CATEGORIAS}
+                placeholder="Escolha da lista ou digite um assunto"
+              />
             </div>
           </div>
 
@@ -94,7 +96,7 @@ export default function NovoArtigoPage() {
                 name="autor"
                 type="text"
                 required
-                defaultValue="Raimundo Padilha"
+                autoComplete="off"
                 placeholder="Nome do autor"
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
@@ -130,6 +132,7 @@ export default function NovoArtigoPage() {
                 name="tempoLeitura"
                 type="text"
                 required
+                autoComplete="off"
                 placeholder="Ex: 5 min"
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
@@ -141,24 +144,18 @@ export default function NovoArtigoPage() {
               htmlFor="imagemCapa"
               className="mb-2 block font-semibold text-gray-800 dark:text-gray-200"
             >
-              URL da imagem de capa{" "}
+              Imagem de capa{" "}
               <span className="font-normal text-gray-500 dark:text-gray-400">
                 (opcional)
               </span>
             </label>
 
-            <input
-              id="imagemCapa"
-              name="imagemCapa"
-              type="url"
-              inputMode="url"
-              placeholder="https://exemplo.com/imagem.jpg"
-              className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-            />
+            <CapaUpload id="imagemCapa" name="imagemCapa" />
 
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              Cole a URL pública de uma imagem (JPG, PNG ou WEBP). Se ficar em
-              branco, uma capa padrão sóbria será usada.
+              Escolha uma foto do seu computador ou celular (JPG, PNG, WEBP ou
+              GIF, até 5 MB). Se não escolher nenhuma, uma capa padrão sóbria
+              será usada.
             </p>
           </div>
 
@@ -206,23 +203,23 @@ export default function NovoArtigoPage() {
               Cancelar
             </Link>
 
-            <button
-              type="submit"
+            <SubmitButton
               name="status"
               value="Rascunho"
+              pendingLabel="Salvando..."
               className="rounded-xl border border-gray-300 px-6 py-3 font-semibold text-gray-900 transition hover:bg-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
             >
               Salvar rascunho
-            </button>
+            </SubmitButton>
 
-            <button
-              type="submit"
+            <SubmitButton
               name="status"
               value="Publicado"
+              pendingLabel="Publicando..."
               className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
             >
               Publicar artigo
-            </button>
+            </SubmitButton>
           </div>
         </form>
       </section>

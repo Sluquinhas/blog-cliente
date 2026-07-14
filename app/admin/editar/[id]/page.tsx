@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ThemeToggle from "../../../components/ThemeToggle";
+import CategoriaInput from "../../../components/CategoriaInput";
+import CapaUpload from "../../../components/CapaUpload";
+import SubmitButton from "../../../components/SubmitButton";
 import { buscarArtigoPorId, atualizarArtigo } from "../../../actions/artigos";
 import LogoutButton from "../../LogoutButton";
 import { CATEGORIAS } from "@/lib/constants";
@@ -16,10 +19,6 @@ export default async function EditarArtigoPage({ params }: Props) {
   if (!artigo) {
     notFound();
   }
-
-  const categorias = CATEGORIAS.includes(artigo.categoria)
-    ? CATEGORIAS
-    : [artigo.categoria, ...CATEGORIAS];
 
   return (
     <main className="min-h-screen bg-gray-100 text-gray-900 transition-colors dark:bg-gray-950 dark:text-white">
@@ -54,6 +53,7 @@ export default async function EditarArtigoPage({ params }: Props) {
 
         <form
           action={atualizarArtigo}
+          autoComplete="off"
           className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition-colors dark:border-gray-800 dark:bg-gray-900 sm:p-8"
         >
           <input type="hidden" name="id" value={artigo.id} />
@@ -72,6 +72,7 @@ export default async function EditarArtigoPage({ params }: Props) {
                 name="titulo"
                 type="text"
                 required
+                autoComplete="off"
                 defaultValue={artigo.titulo}
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
@@ -85,18 +86,13 @@ export default async function EditarArtigoPage({ params }: Props) {
                 Categoria
               </label>
 
-              <select
+              <CategoriaInput
                 id="categoria"
                 name="categoria"
+                options={CATEGORIAS}
                 defaultValue={artigo.categoria}
-                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-              >
-                {categorias.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
+                placeholder="Escolha da lista ou digite um assunto"
+              />
             </div>
           </div>
 
@@ -114,6 +110,7 @@ export default async function EditarArtigoPage({ params }: Props) {
                 name="autor"
                 type="text"
                 required
+                autoComplete="off"
                 defaultValue={artigo.autor}
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
@@ -150,6 +147,7 @@ export default async function EditarArtigoPage({ params }: Props) {
                 name="tempoLeitura"
                 type="text"
                 required
+                autoComplete="off"
                 defaultValue={artigo.tempoLeitura}
                 className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               />
@@ -161,21 +159,22 @@ export default async function EditarArtigoPage({ params }: Props) {
               htmlFor="imagemCapa"
               className="mb-2 block font-semibold text-gray-800 dark:text-gray-200"
             >
-              URL da imagem de capa{" "}
+              Imagem de capa{" "}
               <span className="font-normal text-gray-500 dark:text-gray-400">
                 (opcional)
               </span>
             </label>
 
-            <input
+            <CapaUpload
               id="imagemCapa"
               name="imagemCapa"
-              type="url"
-              inputMode="url"
-              defaultValue={artigo.imagemCapa ?? ""}
-              placeholder="https://exemplo.com/imagem.jpg"
-              className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+              capaAtual={artigo.imagemCapa}
             />
+
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              Para trocar a capa, escolha uma nova foto (JPG, PNG, WEBP ou GIF,
+              até 5 MB). Deixe em branco para manter a imagem atual.
+            </p>
           </div>
 
           <div className="mt-6">
@@ -241,12 +240,12 @@ export default async function EditarArtigoPage({ params }: Props) {
               Cancelar
             </Link>
 
-            <button
-              type="submit"
+            <SubmitButton
+              pendingLabel="Salvando..."
               className="rounded-xl bg-green-600 px-6 py-3 font-semibold text-white transition hover:bg-green-700"
             >
               Salvar alterações
-            </button>
+            </SubmitButton>
           </div>
         </form>
       </section>
