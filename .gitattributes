@@ -1,0 +1,5 @@
+# Força LF (line ending Unix) em scripts shell e configs — evita erro
+# "$'\r': command not found" quando Windows converte CRLF ao clonar.
+*.sh text eol=lf
+.env* text eol=lf
+Dockerfile text eol=lf
