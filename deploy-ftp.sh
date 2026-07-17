@@ -84,29 +84,35 @@ if ! command -v lftp >/dev/null 2>&1; then
   exit 1
 fi
 
-lftp -u "$FTP_USER,$FTP_PASS" -e "
+# .htaccess/api-proxy.php do public_html so sao reenviados se existirem localmente
+# (lftp nao entende `[ -f ... ]`, entao o teste eh feito aqui em bash e as linhas
+# extras sao montadas condicionalmente antes de chamar o lftp).
+EXTRA_PUTS=""
+if [ -f hostinger/.htaccess ]; then
+  EXTRA_PUTS="$EXTRA_PUTS put -O $REMOTE_PUBLIC_HTML hostinger/.htaccess;"
+fi
+if [ -f hostinger/api-proxy.php ]; then
+  EXTRA_PUTS="$EXTRA_PUTS put -O $REMOTE_PUBLIC_HTML hostinger/api-proxy.php;"
+fi
+
+lftp -e "
 set ssl:verify-certificate no;
 set ftp:ssl-allow yes;
 set ftp:ssl-force yes;
+open -u $FTP_USER,$FTP_PASS ftp://$FTP_HOST;
 
-# Mirror do standalone → blog-padilha/ (exclui node_modules e arquivos sensiveis)
-mirror --reverse --delete --verbose \\
-  --exclude-glob node_modules/ \\
-  --exclude-glob .env \\
-  --exclude-glob .env.* \\
-  --exclude-glob *.log \\
-  --exclude-glob *.pid \\
-  .next/standalone/ $REMOTE_APP_DIR;
+# Mirror do standalone -> blog-padilha/ (exclui apenas arquivos sensiveis; o
+# node_modules AQUI e o bundle minimo que o proprio Next.js standalone empacota
+# pra rodar em producao — nao e o node_modules da raiz do repo, e nao pode ser
+# excluido, senao o server.js sobe sem dependencias e o processo Node quebra)
+mirror --reverse --delete --verbose --exclude-glob .env --exclude-glob .env.* --exclude-glob *.log --exclude-glob *.pid .next/standalone/ $REMOTE_APP_DIR;
 
 # Copia start-server.sh (fora do standalone)
 put -O $REMOTE_APP_DIR start-server.sh;
 
-# .htaccess + api-proxy.php pro public_html (se existirem no hostinger/)
-[ -f hostinger/.htaccess ] && put -O $REMOTE_PUBLIC_HTML hostinger/.htaccess;
-[ -f hostinger/api-proxy.php ] && put -O $REMOTE_PUBLIC_HTML hostinger/api-proxy.php;
-
+$EXTRA_PUTS
 bye
-" "ftp://$FTP_HOST" || {
+" || {
   echo "ERRO: upload falhou. Verifica credenciais e conexao."
   exit 1
 }

@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+
   experimental: {
     serverActions: {
       // Capas são enviadas do dispositivo pelo painel; o padrão é 1 MB.
