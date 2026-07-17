@@ -1,247 +1,151 @@
-# Deploy — Blog "Economista Raimundo Padilha" (VPS Hostinger)
+# Deploy — Blog "Economista Raimundo Padilha" (Hostinger Shared Hosting)
 
-Guia passo a passo para publicar o blog num **VPS Hostinger (Ubuntu)** com **disco
-persistente**, mantendo **SQLite** como banco. Como o ambiente não é serverless, o SQLite
-local é a escolha correta — não há necessidade de trocar de banco.
-
-**Caminho recomendado:** Node + **PM2** + **Nginx** (reverse proxy) + **Certbot** (HTTPS).
-É o mais simples para um único VPS: acesso direto ao arquivo `.db` no disco, backup trivial
-por cron, e `next start` "suporta todos os recursos do Next" (inclusive otimização de imagem
-com `sharp`, que já é dependência transitiva). Uma alternativa em **Docker** está ao final.
+Arquitetura de produção **atualizada** em 17/07/2026. O blog roda num plano de
+**shared hosting da Hostinger** — Node.js 22 (via alt-nodejs) com Next.js em
+modo `standalone`, mantido vivo por cron a cada 5 min. **Não é VPS.** Documentos
+antigos que descreviam PM2 + Nginx + Certbot foram substituídos por este.
 
 ---
 
-## 0. Visão geral dos caminhos
+## Visão geral
 
 ```
-/var/www/padilha-blog        → código da aplicação (releases)
-/var/lib/padilha-blog/prod.db→ banco SQLite (disco PERSISTENTE, fora das releases)
-/var/backups/padilha-blog    → backups automáticos do .db
+Host:   Hostinger Shared (u275149467@212.85.6.130:65002)
+Runtime: Node.js 22 (fallback pra 20) via /opt/alt/alt-nodejs22/root/usr/bin/node
+Porta:  3003 (bind em 127.0.0.1, proxy via .htaccess/api-proxy.php no public_html)
+
+Estrutura no server:
+  ~/domains/raimundopadilha.com.br/
+    ├── blog-padilha/                 → código Next.js standalone (server.js)
+    │   ├── .env                       → credenciais (nunca commitar)
+    │   ├── db/                        → SQLite (prod.db)
+    │   ├── server.js                  → entrypoint standalone
+    │   └── start-server.sh            → boot script (chamado pelo cron)
+    ├── public_html/                   → onde o domínio aponta
+    │   ├── .htaccess                  → rewrite pro proxy
+    │   └── api-proxy.php              → forward pra porta 3003
+    ├── blog-padilha-server.log        → stdout/stderr do Node
+    ├── blog-padilha-server.pid        → PID do processo ativo
+    └── blog-padilha-cron.log          → log do cron watchdog
 ```
+
+**Cron watchdog** (rodando a cada 5 min):
+```
+*/5 * * * * bash ~/domains/raimundopadilha.com.br/blog-padilha/start-server.sh >> ~/domains/raimundopadilha.com.br/blog-padilha-cron.log 2>&1
+```
+
+O `start-server.sh` faz 3 coisas:
+1. Se o processo já está rodando **e** o `server.js` **não** foi atualizado depois do PID, sai (no-op).
+2. Se o `server.js` é **mais recente** que o PID (sinal de que houve deploy), **mata o PID e reinicia** — é o mecanismo de auto-restart pós-deploy via FTP.
+3. Se o processo não está rodando, inicia.
 
 ---
 
-## 1. Pré-requisitos no servidor (Ubuntu)
+## Dois caminhos de deploy
+
+### Caminho A: Deploy via SSH (dono do projeto)
+
+Usado por quem tem SSH direto na conta `u275149467`.
 
 ```bash
-# Node 22 LTS (via nodesource) e ferramentas para compilar o better-sqlite3 (módulo nativo)
-sudo apt-get update
-sudo apt-get install -y curl git build-essential python3 nginx
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# PM2 (gerenciador de processos)
-sudo npm install -g pm2
-
-node -v   # deve mostrar v22.x
+bash deploy.sh
 ```
 
-## 2. Obter o código
+Faz: build local → empacota → `scp` pro server → extrai em `~/domains/raimundopadilha.com.br/blog-padilha/` → mata Node antigo → reinicia com `start-server.sh`.
+
+Requer: chave SSH configurada pra `u275149467@212.85.6.130` (porta 65002).
+
+### Caminho B: Deploy via FTP (colaboradores sem SSH)
+
+Usado por colaboradores externos que só têm acesso FTP dedicado (não SSH da conta principal).
 
 ```bash
-sudo mkdir -p /var/www/padilha-blog /var/lib/padilha-blog /var/backups/padilha-blog
-sudo chown -R "$USER" /var/www/padilha-blog /var/lib/padilha-blog /var/backups/padilha-blog
-
-cd /var/www/padilha-blog
-git clone <URL_DO_REPOSITORIO> .
-# (ou envie os arquivos via scp/rsync — NÃO envie node_modules, .next nem o dev.db)
+bash deploy-ftp.sh
 ```
 
-## 3. Variáveis de ambiente
+Faz: build local → empacota bundle standalone → upload via `lftp` pra `/blog-padilha/` (dentro do FTP chrootado) → o cron do server detecta código novo e reinicia o Node em até 5 min.
 
-Crie o arquivo `.env` na raiz (`/var/www/padilha-blog/.env`) a partir do `.env.example`:
-
+**Pré-requisitos** (Linux/Mac/WSL):
 ```bash
-cp .env.example .env
-nano .env
+# Instalar lftp
+sudo apt install lftp   # Ubuntu/Debian
+brew install lftp        # Mac
+
+# Criar .env.ftp na raiz do repo (NÃO commitar, já está no .gitignore)
+cat > .env.ftp <<EOF
+FTP_HOST=ftp.raimundopadilha.com.br
+FTP_USER=<seu-user-ftp>
+FTP_PASS=<sua-senha-ftp>
+EOF
 ```
 
-Preencha:
+O escopo do usuário FTP é **chrootado** em `/home/u275149467/domains/raimundopadilha.com.br/` — ele só vê o próprio domínio, não os outros projetos da conta.
 
-```bash
-DATABASE_URL="file:/var/lib/padilha-blog/prod.db"   # disco persistente, caminho ABSOLUTO
+---
+
+## Setup inicial no server (histórico — já foi feito)
+
+Deixado aqui pra referência caso precise recriar num domínio novo.
+
+**1. Node 22 via alt-nodejs (já disponível na Hostinger)** — não precisa instalar, só usar o path completo `/opt/alt/alt-nodejs22/root/usr/bin/node`.
+
+**2. `.env` de produção** em `~/domains/raimundopadilha.com.br/blog-padilha/.env`:
+```
+DATABASE_URL="file:./db/prod.db"
 ADMIN_PASSWORD="<senha-forte-do-painel>"
-SESSION_SECRET="$(openssl rand -base64 32)"          # cole o valor gerado
-NEXT_PUBLIC_SITE_URL="https://padilha.com.br"
+SESSION_SECRET="<gerado-com-openssl-rand-base64-32>"
+NEXT_PUBLIC_SITE_URL="https://raimundopadilha.com.br"
 NODE_ENV="production"
 ```
 
-> ⚠️ `NEXT_PUBLIC_SITE_URL` é embutido no build — defina-o **antes** de rodar `npm run build`.
-> O `.env` nunca deve ser versionado (já está no `.gitignore`).
+`NEXT_PUBLIC_SITE_URL` é embutido no build — precisa estar setado **antes** do `npm run build` que roda no LOCAL (o build compilado é o que sobe via deploy).
 
-## 4. Instalar, migrar, popular e buildar
-
-A ordem importa: o banco precisa existir e estar populado **antes** do build, pois a home e a
-lista de artigos são pré-renderizadas com o conteúdo do banco.
-
-```bash
-cd /var/www/padilha-blog
-
-npm ci                       # instala deps (postinstall roda `prisma generate`)
-npx prisma migrate deploy    # cria/atualiza o schema no prod.db
-npm run seed                 # popula os 6 artigos iniciais (idempotente; só na 1ª vez)
-npm run build                # prisma generate + next build
+**3. Cron watchdog** no painel Hostinger → Advanced → Cron Jobs:
+```
+Comando:  bash ~/domains/raimundopadilha.com.br/blog-padilha/start-server.sh >> ~/domains/raimundopadilha.com.br/blog-padilha-cron.log 2>&1
+Frequência: */5 * * * * (a cada 5 minutos)
 ```
 
-> Em deploys seguintes (atualização de código), repita `npm ci`, `npx prisma migrate deploy`
-> e `npm run build`. **Não** rode o seed de novo a menos que queira reinserir os artigos
-> iniciais (ele é idempotente por slug e não apaga o conteúdo criado pelo painel).
-
-## 5. Subir com PM2
-
-```bash
-cd /var/www/padilha-blog
-pm2 start ecosystem.config.js
-pm2 save
-pm2 startup        # siga a instrução exibida para iniciar no boot
-pm2 logs padilha-blog   # acompanhar logs
-```
-
-A aplicação ficará escutando em `http://127.0.0.1:3000`.
-
-## 6. Nginx como reverse proxy
-
-Crie `/etc/nginx/sites-available/padilha-blog`:
-
-```nginx
-server {
-    listen 80;
-    server_name padilha.com.br www.padilha.com.br;
-
-    # Limite de upload de formulários (inclui a foto de capa do artigo, até 5 MB)
-    client_max_body_size 6m;
-
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Host              $host;
-        proxy_set_header X-Real-IP         $remote_addr;
-        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header Upgrade           $http_upgrade;
-        proxy_set_header Connection        "upgrade";
-        # Não bufferizar respostas em streaming do Next
-        proxy_buffering off;
-        proxy_set_header X-Accel-Buffering no;
-    }
-}
-```
-
-Ative e recarregue:
-
-```bash
-sudo ln -s /etc/nginx/sites-available/padilha-blog /etc/nginx/sites-enabled/
-sudo nginx -t && sudo systemctl reload nginx
-```
-
-## 7. HTTPS com Certbot (Let's Encrypt)
-
-```bash
-sudo apt-get install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d padilha.com.br -d www.padilha.com.br
-# Certbot ajusta o Nginx para 443 e configura a renovação automática.
-sudo certbot renew --dry-run   # testar renovação
-```
-
-## 8. Backup automático do SQLite
-
-Crie `/usr/local/bin/backup-padilha-blog.sh`:
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-SRC="/var/lib/padilha-blog/prod.db"
-DEST_DIR="/var/backups/padilha-blog"
-STAMP="$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$DEST_DIR"
-# .backup garante uma cópia consistente mesmo com a app rodando
-sqlite3 "$SRC" ".backup '$DEST_DIR/prod-$STAMP.db'"
-# Mantém apenas os últimos 14 backups
-ls -1t "$DEST_DIR"/prod-*.db | tail -n +15 | xargs -r rm --
-```
-
-```bash
-sudo apt-get install -y sqlite3
-sudo chmod +x /usr/local/bin/backup-padilha-blog.sh
-# Agendar diariamente às 03:00 no cron do root:
-echo "0 3 * * * /usr/local/bin/backup-padilha-blog.sh" | sudo tee /etc/cron.d/padilha-blog-backup
-```
-
-## 9. Atualizações futuras (resumo)
-
-```bash
-cd /var/www/padilha-blog
-git pull
-npm ci
-npx prisma migrate deploy
-npm run build
-pm2 reload padilha-blog
-```
+**4. Proxy PHP no `public_html`** — o `deploy.sh` já copia `.htaccess` e `api-proxy.php` da pasta `hostinger/` do repo pro `public_html`. Isso faz o domínio HTTPS servido pelo Apache da Hostinger encaminhar tudo pra porta 3003 do Node.
 
 ---
 
-## ✅ Checklist final de "pronto para produção"
+## Atualizações futuras
 
-- [ ] `.env` preenchido com `ADMIN_PASSWORD` e `SESSION_SECRET` fortes; `DATABASE_URL`
-      apontando para `/var/lib/padilha-blog/prod.db`; `NEXT_PUBLIC_SITE_URL=https://padilha.com.br`.
-- [ ] `npx prisma migrate deploy` executado; `prod.db` criado no disco persistente com
-      permissão de escrita para o usuário do processo.
-- [ ] `npm run seed` executado na primeira publicação (artigos iniciais aparecem).
-- [ ] `npm run build` concluído sem erros (rodado **após** o seed).
-- [ ] PM2 rodando (`pm2 status`) e configurado para iniciar no boot (`pm2 save && pm2 startup`).
-- [ ] Nginx encaminhando para a porta 3000; `nginx -t` OK.
-- [ ] HTTPS ativo via Certbot; redirecionamento http→https funcionando.
-- [ ] Backup do `.db` agendado no cron e testado.
-- [ ] `/admin` redireciona para `/admin/login` sem sessão; login funciona; criar/editar/excluir
-      reflete no site sem rebuild.
-- [ ] `/robots.txt` e `/sitemap.xml` acessíveis; `/admin` bloqueado no robots.
-- [ ] Nenhum segredo nem `dev.db` versionado no repositório.
+Nada diferente — mesmo comando de sempre:
+```bash
+bash deploy.sh       # se você tem SSH
+# ou
+bash deploy-ftp.sh   # se você é colaborador (só FTP)
+```
+
+Não precisa de `npm ci` nem `prisma migrate` no server — o bundle standalone traz tudo pronto do build local. Só o `.env` e o SQLite (`db/prod.db`) permanecem no server, preservados entre deploys.
 
 ---
 
-## Alternativa: Docker (opcional)
+## Backup do SQLite
 
-Se preferir conteinerizar, use `output: "standalone"` no `next.config.ts` e um Dockerfile
-multi-stage, montando o banco como **volume** para persistência:
-
-```dockerfile
-# Dockerfile (esboço)
-FROM node:22-bookworm-slim AS deps
-WORKDIR /app
-COPY package*.json ./
-RUN apt-get update && apt-get install -y python3 build-essential && npm ci
-
-FROM node:22-bookworm-slim AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-ENV NEXT_PUBLIC_SITE_URL=https://padilha.com.br
-RUN npx prisma generate && npm run build
-
-FROM node:22-bookworm-slim AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/prisma ./prisma
-EXPOSE 3000
-CMD ["node", "server.js"]
-```
-
+O banco vive em `~/domains/raimundopadilha.com.br/blog-padilha/db/prod.db`.
+Backup manual via SSH:
 ```bash
-# O banco vive num volume persistente, fora da imagem:
-docker run -d --name padilha-blog -p 3000:3000 \
-  -e DATABASE_URL="file:/data/prod.db" \
-  -e ADMIN_PASSWORD="..." -e SESSION_SECRET="..." \
-  -e NEXT_PUBLIC_SITE_URL="https://padilha.com.br" \
-  -v /var/lib/padilha-blog:/data \
-  padilha-blog
-# Rodar migrate/seed dentro do container na primeira vez:
-docker exec -it padilha-blog npx prisma migrate deploy
-docker exec -it padilha-blog npm run seed
+ssh -p 65002 u275149467@212.85.6.130 "cd ~/domains/raimundopadilha.com.br/blog-padilha && sqlite3 db/prod.db \".backup db/backup-\$(date +%Y%m%d).db\""
 ```
 
-> Para o caminho Docker é necessário adicionar `output: "standalone"` ao `next.config.ts`.
-> O caminho **PM2** acima é o recomendado por ser mais simples de operar e fazer backup num
-> único VPS.
+Pra automatizar, agendar via painel Hostinger → Cron Jobs (backup diário às 3h).
+
+---
+
+## Troubleshooting
+
+**Site fora do ar após deploy**
+- SSH: `tail -30 ~/domains/raimundopadilha.com.br/blog-padilha-server.log`
+- Verifica se o processo tá rodando: `cat ~/domains/raimundopadilha.com.br/blog-padilha-server.pid && ps -p $(cat ~/domains/raimundopadilha.com.br/blog-padilha-server.pid)`
+- Força restart manual: `bash ~/domains/raimundopadilha.com.br/blog-padilha/start-server.sh`
+
+**Cron não reinicia após deploy via FTP**
+- Verifica se o timestamp do `server.js` é maior que o do `.pid`: `ls -l ~/domains/raimundopadilha.com.br/blog-padilha/server.js ~/domains/raimundopadilha.com.br/blog-padilha-server.pid`
+- Aguarde 5 min (próximo tick do cron) ou force manualmente.
+
+**Deploy FTP falhando (lftp erro)**
+- Verifica `.env.ftp` com credenciais corretas
+- Testa conexão manual: `lftp -u $FTP_USER,$FTP_PASS ftp://$FTP_HOST` (list arquivos com `ls`)
