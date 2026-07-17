@@ -13,7 +13,17 @@ PORT=3003
 if [ -f "$PID_FILE" ]; then
     PID=$(cat "$PID_FILE")
     if kill -0 "$PID" 2>/dev/null; then
-        exit 0
+        # Auto-restart: se o server.js foi atualizado (deploy via FTP feito
+        # pelo amigo) DEPOIS que o processo iniciou, mata + reinicia. Sem
+        # isso, deploy via FTP nao teria como restartar o Node.
+        if [ -f "$APP_DIR/server.js" ] && [ "$APP_DIR/server.js" -nt "$PID_FILE" ]; then
+            echo "[$(date)] Codigo novo detectado (server.js mais recente que PID). Restartando..."
+            kill -9 "$PID" 2>/dev/null || true
+            rm -f "$PID_FILE"
+            sleep 2
+        else
+            exit 0
+        fi
     fi
 fi
 
