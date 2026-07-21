@@ -123,6 +123,28 @@ Não precisa de `npm ci` nem `prisma migrate` no server — o bundle standalone 
 
 ---
 
+## Por que o build usa `--webpack` (não Turbopack)
+
+O script `"build"` do `package.json` roda `next build --webpack` de propósito — **não tira essa flag**.
+
+Com o bundler padrão (Turbopack), o Next.js externaliza o `@prisma/client` (faz parte
+da lista automática de `serverExternalPackages`) e gera um especificador sintético
+com hash pro runtime WASM do query compiler do Prisma 7 (algo como
+`@prisma/client-<hash>/runtime/client`). Esse hash não corresponde a nenhum caminho
+real em `node_modules`, então o arquivo nunca é copiado pro `.next/standalone`. O
+processo Node sobe normalmente e serve rotas estáticas, mas **crasha assim que
+qualquer rota dinâmica que usa Prisma é acessada** (`/artigos/[slug]`, `/admin`,
+`/sitemap.xml`) com `Cannot find module '@prisma/client-<hash>/runtime/client'` —
+e como é a mesma instância de Node servindo tudo, o site inteiro cai (502) até
+alguém reiniciar manualmente, já que o crash não deixa rastro de causa óbvia no
+`server.log` além do stack trace do require.
+
+Com `--webpack`, o arquivo WASM é traçado e copiado no caminho real
+(`node_modules/@prisma/client/runtime/query_compiler_fast_bg.sqlite.wasm-base64.mjs`),
+sem hash sintético, e tudo funciona.
+
+---
+
 ## Backup do SQLite
 
 O banco vive em `~/domains/raimundopadilha.com.br/blog-padilha/db/prod.db`.
