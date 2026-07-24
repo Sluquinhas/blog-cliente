@@ -85,11 +85,12 @@ sleep 2
 
 mkdir -p "\$REMOTE_DIR"
 
-# Limpar pasta antiga (preservando .env, node_modules e logs)
+# Limpar pasta antiga (preservando .env, node_modules, logs e o db/ de producao)
 find "\$REMOTE_DIR" -mindepth 1 -maxdepth 1 \\
   ! -name '.env' \\
   ! -name 'node_modules' \\
   ! -name '*.log' \\
+  ! -name 'db' \\
   -exec rm -rf {} +
 
 # Extrair bundle numa pasta temporaria

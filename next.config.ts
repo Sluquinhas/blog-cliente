@@ -8,6 +8,13 @@ const nextConfig: NextConfig = {
       // Capas são enviadas do dispositivo pelo painel; o padrão é 1 MB.
       // 6 MB acomoda a validação de até 5 MB feita no server action.
       bodySizeLimit: "6mb",
+      // O proxy PHP da Hostinger (api-proxy.php) encaminha pro Node em
+      // 127.0.0.1:3003 sem setar x-forwarded-host corretamente, entao o
+      // Next ve host=127.0.0.1:3003 vs origin=raimundopadilha.com.br e
+      // rejeita toda Server Action (login, salvar artigo etc.) com "Invalid
+      // Server Actions request". allowedOrigins confia explicitamente no
+      // dominio publico independente do que o proxy repassa.
+      allowedOrigins: ["raimundopadilha.com.br"],
     },
   },
 

@@ -101,11 +101,14 @@ set ftp:ssl-allow yes;
 set ftp:ssl-force yes;
 open -u $FTP_USER,$FTP_PASS ftp://$FTP_HOST;
 
-# Mirror do standalone -> blog-padilha/ (exclui apenas arquivos sensiveis; o
-# node_modules AQUI e o bundle minimo que o proprio Next.js standalone empacota
-# pra rodar em producao — nao e o node_modules da raiz do repo, e nao pode ser
-# excluido, senao o server.js sobe sem dependencias e o processo Node quebra)
-mirror --reverse --delete --verbose --exclude-glob .env --exclude-glob .env.* --exclude-glob *.log --exclude-glob *.pid .next/standalone/ $REMOTE_APP_DIR;
+# Mirror do standalone -> blog-padilha/ (exclui arquivos sensiveis e o db/ de
+# producao; o node_modules AQUI e o bundle minimo que o proprio Next.js
+# standalone empacota pra rodar em producao — nao e o node_modules da raiz do
+# repo, e nao pode ser excluido, senao o server.js sobe sem dependencias e o
+# processo Node quebra. db/ (SQLite de producao) NUNCA existe no build local,
+# entao sem esse exclude o mirror --delete apaga o banco de producao inteiro
+# a cada deploy — ja aconteceu uma vez, nao repetir.
+mirror --reverse --delete --verbose --exclude-glob .env --exclude-glob .env.* --exclude-glob *.log --exclude-glob *.pid --exclude-glob db/ .next/standalone/ $REMOTE_APP_DIR;
 
 # Copia start-server.sh (fora do standalone)
 put -O $REMOTE_APP_DIR start-server.sh;
