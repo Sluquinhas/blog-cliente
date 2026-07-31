@@ -167,6 +167,13 @@ Pra automatizar, agendar via painel Hostinger → Cron Jobs (backup diário às 
 **Cron não reinicia após deploy via FTP**
 - Verifica se o timestamp do `server.js` é maior que o do `.pid`: `ls -l ~/domains/raimundopadilha.com.br/blog-padilha/server.js ~/domains/raimundopadilha.com.br/blog-padilha-server.pid`
 - Aguarde 5 min (próximo tick do cron) ou force manualmente.
+- **Se `blog-padilha-cron.log` está com 0 bytes e o `.pid` nunca muda**, o cron provavelmente está quebrando silenciosamente ao chamar `start-server.sh`. Causa mais comum: `start-server.sh` foi salvo/enviado com **CRLF** (line ending Windows) em vez de LF — o `bash` no server falha com `$'\r': command not found` antes mesmo de logar algo. Verifique com `file start-server.sh` no servidor (deve dizer "with CRLF line terminators" se for o problema) e corrija com `sed -i 's/\r$//' start-server.sh`.
+- **Isso já aconteceu de verdade neste projeto** (17/07 e de novo em 31/07): um colaborador no Windows editou/reenviou `start-server.sh` sem o VS Code estar configurado pra LF, reintroduzindo CRLF mesmo com `.gitattributes` já forçando `eol=lf` — porque o `.gitattributes` só normaliza em checkouts novos, não em arquivos que já estavam no disco antes dele existir. Se for editar `start-server.sh`/`deploy.sh`/`deploy-ftp.sh` localmente, confirme o encoding LF antes de rodar `deploy-ftp.sh` (`file *.sh` não deve mostrar "CRLF").
+
+**Login/admin retorna "Algo deu errado" ou "Invalid Server Actions request"**
+- Causa: o proxy PHP (`hostinger/api-proxy.php`) precisa mandar `X-Forwarded-Host` e `X-Forwarded-Proto` com o domínio público explícito. Sem isso, o Next.js vê `Host: 127.0.0.1:3003` (endereço interno) e rejeita toda Server Action (login, salvar artigo, etc.) por proteção CSRF.
+- O `next.config.ts` também tem `experimental.serverActions.allowedOrigins: ["raimundopadilha.com.br"]` como camada extra de segurança, mas o fix real é o proxy mandar os headers corretos.
+- Se aparecer **"Failed to find Server Action. This request might be from an older or newer deployment"**: normalmente é só a página no navegador estar em cache de um build anterior. Dê um refresh forçado (`Ctrl+Shift+R`) antes de testar de novo.
 
 **Deploy FTP falhando (lftp erro)**
 - Verifica `.env.ftp` com credenciais corretas

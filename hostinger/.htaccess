@@ -1,0 +1,34 @@
+# Blog Padilha - Apache config para shared hosting Hostinger
+# Redireciona 100% das requisicoes pro Node.js (Next.js standalone) via PHP proxy
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Preservar Authorization header (Apache shared remove por padrao)
+  RewriteCond %{HTTP:Authorization} ^(.+)$
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+  # Servir /capas/* diretamente pelo Apache (SVGs de seed em public/capas)
+  RewriteCond %{REQUEST_URI} ^/capas/
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f
+  RewriteRule ^ - [L]
+
+  # Servir /_next/static/* e favicon direto pelo Apache tambem, se existirem
+  RewriteCond %{REQUEST_URI} ^/(_next/static|favicon\.ico|robots\.txt|sitemap\.xml)
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f
+  RewriteRule ^ - [L]
+
+  # Redirecionar tudo para api-proxy.php, exceto o proprio arquivo
+  RewriteCond %{REQUEST_URI} !^/api-proxy\.php$
+  RewriteRule ^(.*)$ api-proxy.php [L,QSA]
+</IfModule>
+
+# Desabilitar cache de HTML
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+</IfModule>
