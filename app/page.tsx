@@ -5,6 +5,11 @@ import Capa from "./components/Capa";
 import Footer from "./components/Footer";
 import { listarArtigos } from "./actions/artigos";
 
+// Sem isso, o Next.js gera essa pagina estaticamente no build (usando
+// o banco local de quem rodou `npm run build`) e ela nunca mais reflete
+// artigos publicados/editados depois via /admin ate o proximo deploy.
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const artigosDoBanco = await listarArtigos();
 
