@@ -6,6 +6,7 @@ export const SITE_URL =
 // Sugestões de categoria exibidas no painel. O admin pode escolher uma destas
 // ou digitar um assunto novo — a lista não limita o que pode ser salvo.
 export const CATEGORIAS = [
+  "Opinião",
   "Economia",
   "Mercado Financeiro",
   "Investimentos",
